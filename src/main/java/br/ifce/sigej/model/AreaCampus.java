@@ -1,0 +1,29 @@
+package br.ifce.sigej.model;
+
+public class AreaCampus {
+
+    private int id;
+    private Integer tipoAreaId;
+    private String descricao;
+    private String bloco;
+
+    public AreaCampus() {}
+
+    public AreaCampus(Integer tipoAreaId, String descricao, String bloco) {
+        this.tipoAreaId = tipoAreaId;
+        this.descricao = descricao;
+        this.bloco = bloco;
+    }
+
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+
+    public Integer getTipoAreaId() { return tipoAreaId; }
+    public void setTipoAreaId(Integer tipoAreaId) { this.tipoAreaId = tipoAreaId; }
+
+    public String getDescricao() { return descricao; }
+    public void setDescricao(String descricao) { this.descricao = descricao; }
+
+    public String getBloco() { return bloco; }
+    public void setBloco(String bloco) { this.bloco = bloco; }
+}
