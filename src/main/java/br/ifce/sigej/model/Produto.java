@@ -17,6 +17,14 @@ public class Produto {
         this.marcaId = marcaId;
     }
 
+    public Produto(int id, String descricao, Integer categoriaId, Integer unidadeMedidaId, Integer marcaId) {
+        this.id = id;
+        this.descricao = descricao;
+        this.categoriaId = categoriaId;
+        this.unidadeMedidaId = unidadeMedidaId;
+        this.marcaId = marcaId;
+    }
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 

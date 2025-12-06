@@ -5,21 +5,31 @@ public class Pessoa {
     private int id;
     private String nome;
     private String cpf;
+    private String matriculaSiape;
     private String email;
     private String telefone;
     private boolean ativo;
 
     public Pessoa() {}
 
-    public Pessoa(String nome, String cpf, String email, String telefone) {
+    public Pessoa(String nome, String cpf, String matriculaSiape, String email, String telefone, boolean ativo) {
         this.nome = nome;
         this.cpf = cpf;
+        this.matriculaSiape = matriculaSiape;
         this.email = email;
         this.telefone = telefone;
-        this.ativo = true;
+        this.ativo = ativo;
     }
 
-    // GETTERS E SETTERS
+    public Pessoa(int id, String nome, String cpf, String matriculaSiape, String email, String telefone, boolean ativo) {
+        this.id = id;
+        this.nome = nome;
+        this.cpf = cpf;
+        this.matriculaSiape = matriculaSiape;
+        this.email = email;
+        this.telefone = telefone;
+        this.ativo = ativo;
+    }
 
     public int getId() {
         return id;
@@ -43,6 +53,14 @@ public class Pessoa {
 
     public void setCpf(String cpf) {
         this.cpf = cpf;
+    }
+
+    public String getMatriculaSiape() {
+        return matriculaSiape;
+    }
+
+    public void setMatriculaSiape(String matriculaSiape) {
+        this.matriculaSiape = matriculaSiape;
     }
 
     public String getEmail() {

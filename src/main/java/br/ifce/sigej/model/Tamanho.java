@@ -11,6 +11,11 @@ public class Tamanho {
         this.descricao = descricao;
     }
 
+    public Tamanho(int id, String descricao) {
+        this.id = id;
+        this.descricao = descricao;
+    }
+
     public int getId() {
         return id;
     }

@@ -11,9 +11,7 @@ public class ProdutoVariacao {
 
     public ProdutoVariacao() {}
 
-    public ProdutoVariacao(Integer produtoId, Integer corId, Integer tamanhoId,
-                           String codigoBarras, String codigoInterno) {
-
+    public ProdutoVariacao(Integer produtoId, Integer corId, Integer tamanhoId, String codigoBarras, String codigoInterno) {
         this.produtoId = produtoId;
         this.corId = corId;
         this.tamanhoId = tamanhoId;
@@ -21,7 +19,15 @@ public class ProdutoVariacao {
         this.codigoInterno = codigoInterno;
     }
 
-    // Getters e Setters
+    public ProdutoVariacao(int id, Integer produtoId, Integer corId, Integer tamanhoId, String codigoBarras, String codigoInterno) {
+        this.id = id;
+        this.produtoId = produtoId;
+        this.corId = corId;
+        this.tamanhoId = tamanhoId;
+        this.codigoBarras = codigoBarras;
+        this.codigoInterno = codigoInterno;
+    }
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 

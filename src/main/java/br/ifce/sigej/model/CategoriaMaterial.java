@@ -11,6 +11,11 @@ public class CategoriaMaterial {
         this.nome = nome;
     }
 
+    public CategoriaMaterial(int id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
+
     public int getId() {
         return id;
     }

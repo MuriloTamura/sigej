@@ -3,15 +3,18 @@ package br.ifce.sigej.model;
 public class TipoFuncionario {
 
     private int id;
-    private String nome;
+    private String descricao;
 
     public TipoFuncionario() {}
 
-    public TipoFuncionario(String nome) {
-        this.nome = nome;
+    public TipoFuncionario(String descricao) {
+        this.descricao = descricao;
     }
 
-    // GETTERS E SETTERS
+    public TipoFuncionario(int id, String descricao) {
+        this.id = id;
+        this.descricao = descricao;
+    }
 
     public int getId() {
         return id;
@@ -21,11 +24,11 @@ public class TipoFuncionario {
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getDescricao() {
+        return descricao;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 }

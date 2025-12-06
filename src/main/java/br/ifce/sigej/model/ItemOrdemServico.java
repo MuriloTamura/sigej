@@ -3,34 +3,42 @@ package br.ifce.sigej.model;
 public class ItemOrdemServico {
 
     private int id;
-    private Integer osId;
-    private Integer produtoVariacaoId;
-    private Double quantidadePrevista;
-    private Double quantidadeUsada;
+    private int osId;
+    private int produtoVariacaoId;
+    private double quantidadePrevista;
+    private double quantidadeUsada;
 
     public ItemOrdemServico() {}
 
-    public ItemOrdemServico(Integer osId, Integer produtoVariacaoId,
-                            Double quantidadePrevista, Double quantidadeUsada) {
+    public ItemOrdemServico(int osId, int produtoVariacaoId, double quantidadePrevista, double quantidadeUsada) {
         this.osId = osId;
         this.produtoVariacaoId = produtoVariacaoId;
         this.quantidadePrevista = quantidadePrevista;
         this.quantidadeUsada = quantidadeUsada;
     }
 
-    // Getters e Setters
+    public ItemOrdemServico(int id, int osId, int produtoVariacaoId, double quantidadePrevista, double quantidadeUsada) {
+        this.id = id;
+        this.osId = osId;
+        this.produtoVariacaoId = produtoVariacaoId;
+        this.quantidadePrevista = quantidadePrevista;
+        this.quantidadeUsada = quantidadeUsada;
+    }
+
+    // GETTERS E SETTERS
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public Integer getOsId() { return osId; }
-    public void setOsId(Integer osId) { this.osId = osId; }
+    public int getOsId() { return osId; }
+    public void setOsId(int osId) { this.osId = osId; }
 
-    public Integer getProdutoVariacaoId() { return produtoVariacaoId; }
-    public void setProdutoVariacaoId(Integer produtoVariacaoId) { this.produtoVariacaoId = produtoVariacaoId; }
+    public int getProdutoVariacaoId() { return produtoVariacaoId; }
+    public void setProdutoVariacaoId(int produtoVariacaoId) { this.produtoVariacaoId = produtoVariacaoId; }
 
-    public Double getQuantidadePrevista() { return quantidadePrevista; }
-    public void setQuantidadePrevista(Double quantidadePrevista) { this.quantidadePrevista = quantidadePrevista; }
+    public double getQuantidadePrevista() { return quantidadePrevista; }
+    public void setQuantidadePrevista(double quantidadePrevista) { this.quantidadePrevista = quantidadePrevista; }
 
-    public Double getQuantidadeUsada() { return quantidadeUsada; }
-    public void setQuantidadeUsada(Double quantidadeUsada) { this.quantidadeUsada = quantidadeUsada; }
+    public double getQuantidadeUsada() { return quantidadeUsada; }
+    public void setQuantidadeUsada(double quantidadeUsada) { this.quantidadeUsada = quantidadeUsada; }
 }

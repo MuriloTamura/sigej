@@ -13,6 +13,12 @@ public class LocalEstoque {
         this.responsavelId = responsavelId;
     }
 
+    public LocalEstoque(int id, String descricao, Integer responsavelId) {
+        this.id = id;
+        this.descricao = descricao;
+        this.responsavelId = responsavelId;
+    }
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 

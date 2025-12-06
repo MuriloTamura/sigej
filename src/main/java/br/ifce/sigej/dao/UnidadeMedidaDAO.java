@@ -9,14 +9,15 @@ import java.util.List;
 
 public class UnidadeMedidaDAO {
 
-    public void inserir(UnidadeMedida un) {
-        String sql = "INSERT INTO unidade_medida (sigla, descricao) VALUES (?, ?);";
+    public void inserir(UnidadeMedida u) {
+        String sql = "INSERT INTO unidade_medida (sigla, descricao) VALUES (?, ?)";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, un.getSigla());
-            stmt.setString(2, un.getDescricao());
+            stmt.setString(1, u.getSigla());
+            stmt.setString(2, u.getDescricao());
+
             stmt.executeUpdate();
 
         } catch (SQLException e) {
@@ -26,18 +27,19 @@ public class UnidadeMedidaDAO {
 
     public List<UnidadeMedida> listar() {
         List<UnidadeMedida> lista = new ArrayList<>();
-        String sql = "SELECT * FROM unidade_medida ORDER BY id;";
+        String sql = "SELECT * FROM unidade_medida ORDER BY id";
 
         try (Connection conn = ConnectionFactory.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                UnidadeMedida un = new UnidadeMedida();
-                un.setId(rs.getInt("id"));
-                un.setSigla(rs.getString("sigla"));
-                un.setDescricao(rs.getString("descricao"));
-                lista.add(un);
+                lista.add(new UnidadeMedida(
+                        rs.getInt("id"),
+                        rs.getString("sigla"),
+                        rs.getString("descricao")
+                ));
             }
 
         } catch (SQLException e) {
@@ -45,5 +47,40 @@ public class UnidadeMedidaDAO {
         }
 
         return lista;
+    }
+
+    public void atualizar(UnidadeMedida u) {
+        String sql = "UPDATE unidade_medida SET sigla = ?, descricao = ? WHERE id = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, u.getSigla());
+            stmt.setString(2, u.getDescricao());
+            stmt.setInt(3, u.getId());
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao atualizar unidade_medida: " + e.getMessage());
+        }
+    }
+
+    public void deletar(int id) {
+        String sql = "DELETE FROM unidade_medida WHERE id = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+
+        } catch (SQLException ex) {
+            if (ex.getMessage().contains("foreign key")) {
+                System.out.println("Não é possível excluir: existem produtos vinculados a esta unidade de medida.");
+            } else {
+                System.out.println("Erro ao deletar unidade_medida: " + ex.getMessage());
+            }
+        }
     }
 }

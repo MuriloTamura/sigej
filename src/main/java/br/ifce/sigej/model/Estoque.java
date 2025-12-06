@@ -2,49 +2,29 @@ package br.ifce.sigej.model;
 
 public class Estoque {
 
-    private Integer produtoVariacaoId;
-    private Integer localEstoqueId;
-    private Double quantidade;
-    private Double pontoReposicao;
+    private int produtoVariacaoId;
+    private int localEstoqueId;
+    private double quantidade;
+    private double pontoReposicao;
 
     public Estoque() {}
 
-    public Estoque(Integer produtoVariacaoId, Integer localEstoqueId, Double quantidade, Double pontoReposicao) {
+    public Estoque(int produtoVariacaoId, int localEstoqueId, double quantidade, double pontoReposicao) {
         this.produtoVariacaoId = produtoVariacaoId;
         this.localEstoqueId = localEstoqueId;
         this.quantidade = quantidade;
         this.pontoReposicao = pontoReposicao;
     }
 
-    public Integer getProdutoVariacaoId() {
-        return produtoVariacaoId;
-    }
+    public int getProdutoVariacaoId() { return produtoVariacaoId; }
+    public void setProdutoVariacaoId(int produtoVariacaoId) { this.produtoVariacaoId = produtoVariacaoId; }
 
-    public void setProdutoVariacaoId(Integer produtoVariacaoId) {
-        this.produtoVariacaoId = produtoVariacaoId;
-    }
+    public int getLocalEstoqueId() { return localEstoqueId; }
+    public void setLocalEstoqueId(int localEstoqueId) { this.localEstoqueId = localEstoqueId; }
 
-    public Integer getLocalEstoqueId() {
-        return localEstoqueId;
-    }
+    public double getQuantidade() { return quantidade; }
+    public void setQuantidade(double quantidade) { this.quantidade = quantidade; }
 
-    public void setLocalEstoqueId(Integer localEstoqueId) {
-        this.localEstoqueId = localEstoqueId;
-    }
-
-    public Double getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(Double quantidade) {
-        this.quantidade = quantidade;
-    }
-
-    public Double getPontoReposicao() {
-        return pontoReposicao;
-    }
-
-    public void setPontoReposicao(Double pontoReposicao) {
-        this.pontoReposicao = pontoReposicao;
-    }
+    public double getPontoReposicao() { return pontoReposicao; }
+    public void setPontoReposicao(double pontoReposicao) { this.pontoReposicao = pontoReposicao; }
 }

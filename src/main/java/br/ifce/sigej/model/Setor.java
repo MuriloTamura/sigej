@@ -13,7 +13,11 @@ public class Setor {
         this.sigla = sigla;
     }
 
-    // GETTERS E SETTERS
+    public Setor(int id, String nome, String sigla) {
+        this.id = id;
+        this.nome = nome;
+        this.sigla = sigla;
+    }
 
     public int getId() {
         return id;

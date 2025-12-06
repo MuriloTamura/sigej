@@ -11,6 +11,11 @@ public class StatusOrdemServico {
         this.descricao = descricao;
     }
 
+    public StatusOrdemServico(int id, String descricao) {
+        this.id = id;
+        this.descricao = descricao;
+    }
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 

@@ -11,6 +11,11 @@ public class Cor {
         this.nome = nome;
     }
 
+    public Cor(int id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
+
     public int getId() {
         return id;
     }

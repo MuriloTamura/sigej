@@ -1,33 +1,36 @@
 package br.ifce.sigej;
 
-import br.ifce.sigej.dao.ItemOrdemServicoDAO;
-import br.ifce.sigej.model.ItemOrdemServico;
+
+import br.ifce.sigej.dao.AndamentoOrdemServicoDAO;
+import br.ifce.sigej.dao.CategoriaMaterialDAO;
+import br.ifce.sigej.model.AndamentoOrdemServico;
+import br.ifce.sigej.model.CategoriaMaterial;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 public class Main {
     public static void main(String[] args) {
 
-        ItemOrdemServicoDAO itemDAO = new ItemOrdemServicoDAO();
+        CategoriaMaterialDAO catDAO = new CategoriaMaterialDAO();
 
-// Inserir item (exemplo: para a OS 1 e produto_variacao 4)
-        itemDAO.inserir(new ItemOrdemServico(
-                1,   // os_id
-                4,   // produto_variacao_id
-                5.0, // quantidade prevista
-                3.0  // quantidade usada
-        ));
+        catDAO.inserir(new CategoriaMaterial("Jardinagem"));
+        catDAO.inserir(new CategoriaMaterial("Limpeza"));
 
-        System.out.println("\n=== ITENS DE ORDEM DE SERVIÇO ===");
-        itemDAO.listar().forEach(i ->
-                System.out.println(
-                        i.getId() + " | OS=" + i.getOsId() +
-                                " | ProdutoVar=" + i.getProdutoVariacaoId() +
-                                " | Previsto=" + i.getQuantidadePrevista() +
-                                " | Usado=" + i.getQuantidadeUsada()
-                )
-        );
+        System.out.println("\nANTES DO UPDATE");
+        catDAO.listar().forEach(c -> System.out.println(c.getId() + " - " + c.getNome()));
+
+// Atualizar
+        CategoriaMaterial c = new CategoriaMaterial("Limpeza Geral");
+        c.setId(2);
+        catDAO.atualizar(c);
+
+// Deletar
+        catDAO.deletar(1);
+
+        System.out.println("\nDEPOIS DO UPDATE e DELETE");
+        catDAO.listar().forEach(d -> System.out.println(c.getId() + " - " + c.getNome()));
 
 
 

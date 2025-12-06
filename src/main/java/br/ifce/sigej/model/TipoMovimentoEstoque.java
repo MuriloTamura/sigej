@@ -4,11 +4,17 @@ public class TipoMovimentoEstoque {
 
     private int id;
     private String descricao;
-    private String sinal; // '+' ou '-'
+    private char sinal;
 
     public TipoMovimentoEstoque() {}
 
-    public TipoMovimentoEstoque(String descricao, String sinal) {
+    public TipoMovimentoEstoque(String descricao, char sinal) {
+        this.descricao = descricao;
+        this.sinal = sinal;
+    }
+
+    public TipoMovimentoEstoque(int id, String descricao, char sinal) {
+        this.id = id;
         this.descricao = descricao;
         this.sinal = sinal;
     }
@@ -19,6 +25,6 @@ public class TipoMovimentoEstoque {
     public String getDescricao() { return descricao; }
     public void setDescricao(String descricao) { this.descricao = descricao; }
 
-    public String getSinal() { return sinal; }
-    public void setSinal(String sinal) { this.sinal = sinal; }
+    public char getSinal() { return sinal; }
+    public void setSinal(char sinal) { this.sinal = sinal; }
 }

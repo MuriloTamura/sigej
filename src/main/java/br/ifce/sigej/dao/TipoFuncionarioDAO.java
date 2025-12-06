@@ -15,36 +15,66 @@ public class TipoFuncionarioDAO {
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, t.getNome());
+            stmt.setString(1, t.getDescricao());
             stmt.executeUpdate();
 
-            System.out.println("Tipo de funcionário inserido!");
-
         } catch (SQLException e) {
-            System.out.println("Erro ao inserir tipo de funcionário: " + e.getMessage());
+            System.out.println("Erro ao inserir tipo_funcionario: " + e.getMessage());
         }
     }
-
 
     public List<TipoFuncionario> listar() {
         List<TipoFuncionario> lista = new ArrayList<>();
         String sql = "SELECT * FROM tipo_funcionario ORDER BY id";
 
         try (Connection conn = ConnectionFactory.getConnection();
-             Statement st = conn.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                TipoFuncionario t = new TipoFuncionario();
-                t.setId(rs.getInt("id"));
-                t.setNome(rs.getString("descricao"));
-                lista.add(t);
+                lista.add(new TipoFuncionario(
+                        rs.getInt("id"),
+                        rs.getString("descricao")
+                ));
             }
 
         } catch (SQLException e) {
-            System.out.println("Erro ao listar tipos: " + e.getMessage());
+            System.out.println("Erro ao listar tipo_funcionario: " + e.getMessage());
         }
 
         return lista;
+    }
+
+    public void atualizar(TipoFuncionario t) {
+        String sql = "UPDATE tipo_funcionario SET descricao=? WHERE id=?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, t.getDescricao());
+            stmt.setInt(2, t.getId());
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao atualizar tipo_funcionario: " + e.getMessage());
+        }
+    }
+
+    public void deletar(int id) {
+        String sql = "DELETE FROM tipo_funcionario WHERE id=?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            if (e.getMessage().contains("violates foreign key constraint")) {
+                System.out.println("Não é possível excluir: tipo de funcionário está sendo usado em funcionário.");
+            } else {
+                System.out.println("Erro ao deletar tipo_funcionario: " + e.getMessage());
+            }
+        }
     }
 }

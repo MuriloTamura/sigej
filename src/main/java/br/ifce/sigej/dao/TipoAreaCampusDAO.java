@@ -9,14 +9,15 @@ import java.util.List;
 
 public class TipoAreaCampusDAO {
 
-    public void inserir(TipoAreaCampus tipo) {
-        String sql = "INSERT INTO tipo_area_campus (descricao) VALUES (?);";
-
+    public void inserir(TipoAreaCampus t) {
+        String sql = "INSERT INTO tipo_area_campus (descricao) VALUES (?)";
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, tipo.getDescricao());
+            stmt.setString(1, t.getDescricao());
             stmt.executeUpdate();
+
+            System.out.println("TipoÁrea inserido com sucesso!");
 
         } catch (SQLException e) {
             System.out.println("Erro ao inserir tipo_area_campus: " + e.getMessage());
@@ -25,17 +26,17 @@ public class TipoAreaCampusDAO {
 
     public List<TipoAreaCampus> listar() {
         List<TipoAreaCampus> lista = new ArrayList<>();
-        String sql = "SELECT * FROM tipo_area_campus ORDER BY id;";
+        String sql = "SELECT * FROM tipo_area_campus ORDER BY id";
 
         try (Connection conn = ConnectionFactory.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                TipoAreaCampus tipo = new TipoAreaCampus();
-                tipo.setId(rs.getInt("id"));
-                tipo.setDescricao(rs.getString("descricao"));
-                lista.add(tipo);
+                lista.add(new TipoAreaCampus(
+                        rs.getInt("id"),
+                        rs.getString("descricao")
+                ));
             }
 
         } catch (SQLException e) {
@@ -43,5 +44,44 @@ public class TipoAreaCampusDAO {
         }
 
         return lista;
+    }
+
+    public void atualizar(TipoAreaCampus t) {
+        String sql = "UPDATE tipo_area_campus SET descricao = ? WHERE id = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, t.getDescricao());
+            stmt.setInt(2, t.getId());
+
+            stmt.executeUpdate();
+
+            System.out.println("TipoÁrea atualizado!");
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao atualizar tipo_area_campus: " + e.getMessage());
+        }
+    }
+
+    public void deletar(int id) {
+        String sql = "DELETE FROM tipo_area_campus WHERE id = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+
+            System.out.println("TipoÁrea deletado!");
+
+        } catch (SQLException e) {
+
+            if (e.getMessage().contains("foreign key")) {
+                System.out.println("Não é possível excluir: existe área_campus usando esse tipo!");
+            } else {
+                System.out.println("Erro ao deletar tipo_area_campus: " + e.getMessage());
+            }
+        }
     }
 }
