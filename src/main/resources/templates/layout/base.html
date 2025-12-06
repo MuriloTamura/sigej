@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo} ? ${titulo} + ' - SIGEJ' : 'SIGEJ - Sistema de Gestão'">SIGEJ</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+            <i class="bi bi-gear-fill"></i> SIGEJ
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/"><i class="bi bi-house"></i> Início</a>
+                </li>
+
+                <!-- Dropdown Cadastros Básicos -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-lines-fill"></i> Cadastros Básicos
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/pessoas"><i class="bi bi-people"></i> Pessoas</a></li>
+                        <li><a class="dropdown-item" href="/funcionarios"><i class="bi bi-person-badge"></i> Funcionários</a></li>
+                        <li><a class="dropdown-item" href="/setores"><i class="bi bi-building"></i> Setores</a></li>
+                        <li><a class="dropdown-item" href="/tipos-funcionario"><i class="bi bi-tags"></i> Tipos de Funcionário</a></li>
+                    </ul>
+                </li>
+
+                <!-- Dropdown Campus -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-geo-alt"></i> Campus
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/areas-campus"><i class="bi bi-map"></i> Áreas do Campus</a></li>
+                        <li><a class="dropdown-item" href="/tipos-area"><i class="bi bi-tag"></i> Tipos de Área</a></li>
+                    </ul>
+                </li>
+
+                <!-- Dropdown Equipes -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-people-fill"></i> Equipes
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/equipes"><i class="bi bi-people"></i> Equipes de Manutenção</a></li>
+                        <li><a class="dropdown-item" href="/equipe-membros"><i class="bi bi-person-plus"></i> Membros de Equipe</a></li>
+                    </ul>
+                </li>
+
+                <!-- Dropdown Produtos -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-box-seam"></i> Produtos
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/produtos"><i class="bi bi-box"></i> Produtos</a></li>
+                        <li><a class="dropdown-item" href="/produto-variacoes"><i class="bi bi-boxes"></i> Variações</a></li>
+                        <li><a class="dropdown-item" href="/categorias"><i class="bi bi-collection"></i> Categorias</a></li>
+                        <li><a class="dropdown-item" href="/marcas"><i class="bi bi-bookmark"></i> Marcas</a></li>
+                        <li><a class="dropdown-item" href="/cores"><i class="bi bi-palette"></i> Cores</a></li>
+                        <li><a class="dropdown-item" href="/tamanhos"><i class="bi bi-rulers"></i> Tamanhos</a></li>
+                        <li><a class="dropdown-item" href="/unidades-medida"><i class="bi bi-calculator"></i> Unidades de Medida</a></li>
+                        <li><a class="dropdown-item" href="/fornecedores"><i class="bi bi-truck"></i> Fornecedores</a></li>
+                    </ul>
+                </li>
+
+                <!-- Dropdown Estoque -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-archive"></i> Estoque
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/locais-estoque"><i class="bi bi-house-door"></i> Locais de Estoque</a></li>
+                        <li><a class="dropdown-item" href="/estoques"><i class="bi bi-clipboard-data"></i> Controle de Estoque</a></li>
+                        <li><a class="dropdown-item" href="/movimentos-estoque"><i class="bi bi-arrow-left-right"></i> Movimentos</a></li>
+                        <li><a class="dropdown-item" href="/tipos-movimento"><i class="bi bi-list-ul"></i> Tipos de Movimento</a></li>
+                    </ul>
+                </li>
+
+                <!-- Dropdown Ordem de Serviço -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-clipboard-check"></i> Ordem de Serviço
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/ordens-servico"><i class="bi bi-file-earmark-text"></i> Ordens de Serviço</a></li>
+                        <li><a class="dropdown-item" href="/tipos-os"><i class="bi bi-tags"></i> Tipos de OS</a></li>
+                        <li><a class="dropdown-item" href="/status-os"><i class="bi bi-circle"></i> Status de OS</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Container Principal -->
+<div class="container mt-4">
+    <!-- Alertas de Sucesso/Erro -->
+    <div th:if="${sucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill"></i> <span th:text="${sucesso}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div th:if="${erro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i> <span th:text="${erro}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Conteúdo da Página -->
+    <div th:replace="${content}"></div>
+</div>
+
+<!-- Footer -->
+<footer class="footer mt-5 py-3 bg-light">
+    <div class="container text-center">
+        <span class="text-muted">SIGEJ - Sistema de Gestão © 2024 - IFCE</span>
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- JS Customizado -->
+<script th:src="@{/js/script.js}"></script>
+</body>
+</html>

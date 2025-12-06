@@ -2,11 +2,14 @@ package br.ifce.sigej.dao;
 
 import br.ifce.sigej.database.ConnectionFactory;
 import br.ifce.sigej.model.Pessoa;
+import org.springframework.stereotype.Component;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@Component
 public class PessoaDAO {
 
     public void inserir(Pessoa p) {
@@ -25,7 +28,7 @@ public class PessoaDAO {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            System.out.println("Erro ao inserir pessoa: " + e.getMessage());
+            throw new RuntimeException("Erro ao inserir pessoa: " + e.getMessage(), e);
         }
     }
 
@@ -38,22 +41,34 @@ public class PessoaDAO {
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                Pessoa p = new Pessoa();
-                p.setId(rs.getInt("id"));
-                p.setNome(rs.getString("nome"));
-                p.setCpf(rs.getString("cpf"));
-                p.setMatriculaSiape(rs.getString("matricula_siape"));
-                p.setEmail(rs.getString("email"));
-                p.setTelefone(rs.getString("telefone"));
-                p.setAtivo(rs.getBoolean("ativo"));
-                lista.add(p);
+                lista.add(mapearPessoa(rs));
             }
 
         } catch (SQLException e) {
-            System.out.println("Erro ao listar pessoa: " + e.getMessage());
+            throw new RuntimeException("Erro ao listar pessoas: " + e.getMessage(), e);
         }
 
         return lista;
+    }
+
+    public Optional<Pessoa> buscarPorId(int id) {
+        String sql = "SELECT * FROM pessoa WHERE id = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return Optional.of(mapearPessoa(rs));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar pessoa: " + e.getMessage(), e);
+        }
+
+        return Optional.empty();
     }
 
     public void atualizar(Pessoa p) {
@@ -77,7 +92,7 @@ public class PessoaDAO {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            System.out.println("Erro ao atualizar pessoa: " + e.getMessage());
+            throw new RuntimeException("Erro ao atualizar pessoa: " + e.getMessage(), e);
         }
     }
 
@@ -92,10 +107,21 @@ public class PessoaDAO {
 
         } catch (SQLException e) {
             if (e.getMessage().contains("violates foreign key constraint")) {
-                System.out.println("Não é possível excluir: esta pessoa está sendo usada em funcionário, ordem de serviço ou outra tabela.");
-            } else {
-                System.out.println("Erro ao deletar pessoa: " + e.getMessage());
+                throw new RuntimeException("Não é possível excluir: esta pessoa está sendo referenciada em outras tabelas.");
             }
+            throw new RuntimeException("Erro ao deletar pessoa: " + e.getMessage(), e);
         }
+    }
+
+    private Pessoa mapearPessoa(ResultSet rs) throws SQLException {
+        Pessoa p = new Pessoa();
+        p.setId(rs.getInt("id"));
+        p.setNome(rs.getString("nome"));
+        p.setCpf(rs.getString("cpf"));
+        p.setMatriculaSiape(rs.getString("matricula_siape"));
+        p.setEmail(rs.getString("email"));
+        p.setTelefone(rs.getString("telefone"));
+        p.setAtivo(rs.getBoolean("ativo"));
+        return p;
     }
 }
