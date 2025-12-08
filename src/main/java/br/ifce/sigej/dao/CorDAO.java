@@ -2,11 +2,14 @@ package br.ifce.sigej.dao;
 
 import br.ifce.sigej.database.ConnectionFactory;
 import br.ifce.sigej.model.Cor;
+import org.springframework.stereotype.Component;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@Component
 public class CorDAO {
 
     public void inserir(Cor c) {
@@ -19,13 +22,13 @@ public class CorDAO {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            System.out.println("Erro ao inserir cor: " + e.getMessage());
+            throw new RuntimeException("Erro ao inserir cor: " + e.getMessage(), e);
         }
     }
 
     public List<Cor> listar() {
         List<Cor> lista = new ArrayList<>();
-        String sql = "SELECT * FROM cor ORDER BY id";
+        String sql = "SELECT * FROM cor ORDER BY nome";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -40,10 +43,33 @@ public class CorDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("Erro ao listar cor: " + e.getMessage());
+            throw new RuntimeException("Erro ao listar cores: " + e.getMessage(), e);
         }
 
         return lista;
+    }
+
+    public Optional<Cor> buscarPorId(int id) {
+        String sql = "SELECT * FROM cor WHERE id = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return Optional.of(new Cor(
+                        rs.getInt("id"),
+                        rs.getString("nome")
+                ));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar cor: " + e.getMessage(), e);
+        }
+
+        return Optional.empty();
     }
 
     public void atualizar(Cor c) {
@@ -58,7 +84,7 @@ public class CorDAO {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            System.out.println("Erro ao atualizar cor: " + e.getMessage());
+            throw new RuntimeException("Erro ao atualizar cor: " + e.getMessage(), e);
         }
     }
 
@@ -72,12 +98,10 @@ public class CorDAO {
             stmt.executeUpdate();
 
         } catch (SQLException ex) {
-
             if (ex.getMessage().contains("foreign key")) {
-                System.out.println("Não é possível excluir: existem variações de produto usando esta cor.");
-            } else {
-                System.out.println("Erro ao deletar cor: " + ex.getMessage());
+                throw new RuntimeException("Não é possível excluir: existem variações de produto usando esta cor.");
             }
+            throw new RuntimeException("Erro ao deletar cor: " + ex.getMessage(), ex);
         }
     }
 }

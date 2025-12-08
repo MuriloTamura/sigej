@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Unidade de Medida - SIGEJ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="bi bi-gear-fill"></i> SIGEJ
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}"><i class="bi bi-house"></i> Início</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/pessoas}"><i class="bi bi-people"></i> Pessoas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/unidades-medida}"><i class="bi bi-calculator"></i> Unidades de Medida</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Container -->
+<div class="container mt-4">
+    <div class="mb-4">
+        <h2>
+            <i class="bi bi-calculator"></i>
+            <span th:text="${unidade.id == 0} ? 'Nova Unidade de Medida' : 'Editar Unidade de Medida'"></span>
+        </h2>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form th:action="@{/unidades-medida/salvar}" th:object="${unidade}" method="post">
+
+                        <input type="hidden" th:field="*{id}">
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="sigla" class="form-label">
+                                    Sigla <span class="text-danger">*</span>
+                                </label>
+                                <input type="text"
+                                       class="form-control text-uppercase"
+                                       id="sigla"
+                                       th:field="*{sigla}"
+                                       required
+                                       maxlength="10"
+                                       placeholder="Ex: kg, L, m"
+                                       autofocus
+                                       style="text-transform: uppercase;">
+                                <small class="form-text text-muted">Até 10 caracteres</small>
+                            </div>
+
+                            <div class="col-md-8 mb-3">
+                                <label for="descricao" class="form-label">
+                                    Descrição <span class="text-danger">*</span>
+                                </label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="descricao"
+                                       th:field="*{descricao}"
+                                       required
+                                       maxlength="50"
+                                       placeholder="Digite a descrição completa">
+                                <small class="form-text text-muted">Máximo de 50 caracteres</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 justify-content-end mt-4">
+                            <a th:href="@{/unidades-medida}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Salvar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de ajuda -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-info-circle text-primary"></i> Sobre Unidades
+                    </h5>
+                    <p class="text-muted">
+                        As unidades de medida são usadas para quantificar produtos no estoque.
+                    </p>
+
+                    <hr>
+
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success"></i>
+                            Use siglas padronizadas
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success"></i>
+                            Seja consistente
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success"></i>
+                            Use abreviações conhecidas
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="mb-3"><i class="bi bi-lightbulb text-warning"></i> Exemplos Comuns:</h6>
+
+                    <div class="mb-3">
+                        <strong class="d-block mb-2 small text-muted">VOLUME:</strong>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="badge bg-secondary">L - Litro</span>
+                            <span class="badge bg-secondary">ml - Mililitro</span>
+                            <span class="badge bg-secondary">m³ - Metro cúbico</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong class="d-block mb-2 small text-muted">MASSA:</strong>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="badge bg-secondary">kg - Quilograma</span>
+                            <span class="badge bg-secondary">g - Grama</span>
+                            <span class="badge bg-secondary">mg - Miligrama</span>
+                            <span class="badge bg-secondary">t - Tonelada</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong class="d-block mb-2 small text-muted">COMPRIMENTO:</strong>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="badge bg-secondary">m - Metro</span>
+                            <span class="badge bg-secondary">cm - Centímetro</span>
+                            <span class="badge bg-secondary">mm - Milímetro</span>
+                            <span class="badge bg-secondary">km - Quilômetro</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <strong class="d-block mb-2 small text-muted">OUTROS:</strong>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="badge bg-secondary">un - Unidade</span>
+                            <span class="badge bg-secondary">cx - Caixa</span>
+                            <span class="badge bg-secondary">pç - Peça</span>
+                            <span class="badge bg-secondary">par - Par</span>
+                            <span class="badge bg-secondary">dz - Dúzia</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

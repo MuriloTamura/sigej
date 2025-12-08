@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Funcionário - SIGEJ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="bi bi-gear-fill"></i> SIGEJ
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}"><i class="bi bi-house"></i> Início</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/pessoas}"><i class="bi bi-people"></i> Pessoas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/funcionarios}"><i class="bi bi-person-badge"></i> Funcionários</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Container -->
+<div class="container mt-4">
+    <div class="mb-4">
+        <h2>
+            <i class="bi bi-person-badge"></i>
+            <span th:text="${funcionario.id == 0} ? 'Novo Funcionário' : 'Editar Funcionário'"></span>
+        </h2>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form th:action="@{/funcionarios/salvar}" th:object="${funcionario}" method="post">
+
+                <input type="hidden" th:field="*{id}">
+
+                <div class="row">
+                    <!-- Pessoa -->
+                    <div class="col-md-6 mb-3">
+                        <label for="pessoaId" class="form-label">
+                            Pessoa <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select" id="pessoaId" th:field="*{pessoaId}" required>
+                            <option value="">Selecione uma pessoa</option>
+                            <option th:each="pessoa : ${pessoas}"
+                                    th:value="${pessoa.id}"
+                                    th:text="${pessoa.nome + ' - CPF: ' + pessoa.cpf}">
+                            </option>
+                        </select>
+                        <small class="form-text text-muted">Selecione a pessoa que será funcionário</small>
+                    </div>
+
+                    <!-- Tipo de Funcionário -->
+                    <div class="col-md-6 mb-3">
+                        <label for="tipoFuncionarioId" class="form-label">
+                            Tipo de Funcionário <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select" id="tipoFuncionarioId" th:field="*{tipoFuncionarioId}" required>
+                            <option value="">Selecione um tipo</option>
+                            <option th:each="tipo : ${tipos}"
+                                    th:value="${tipo.id}"
+                                    th:text="${tipo.descricao}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Setor -->
+                    <div class="col-md-6 mb-3">
+                        <label for="setorId" class="form-label">
+                            Setor <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select" id="setorId" th:field="*{setorId}" required>
+                            <option value="">Selecione um setor</option>
+                            <option th:each="setor : ${setores}"
+                                    th:value="${setor.id}"
+                                    th:text="${setor.nome + (setor.sigla != null ? ' (' + setor.sigla + ')' : '')}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Data de Admissão -->
+                    <div class="col-md-6 mb-3">
+                        <label for="dataAdmissao" class="form-label">
+                            Data de Admissão <span class="text-danger">*</span>
+                        </label>
+                        <input type="date"
+                               class="form-control"
+                               id="dataAdmissao"
+                               th:field="*{dataAdmissao}"
+                               required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Data de Demissão -->
+                    <div class="col-md-6 mb-3">
+                        <label for="dataDemissao" class="form-label">
+                            Data de Demissão
+                        </label>
+                        <input type="date"
+                               class="form-control"
+                               id="dataDemissao"
+                               th:field="*{dataDemissao}">
+                        <small class="form-text text-muted">Deixe em branco se o funcionário ainda está ativo</small>
+                    </div>
+                </div>
+
+                <!-- Botões -->
+                <div class="d-flex gap-2 justify-content-end mt-4">
+                    <a th:href="@{/funcionarios}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Card de Ajuda -->
+    <div class="card mt-4 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-info-circle text-primary"></i> Informações</h5>
+            <div class="row">
+                <div class="col-md-4">
+                    <h6><i class="bi bi-1-circle text-success"></i> Passo 1</h6>
+                    <p class="text-muted small">Certifique-se que a pessoa já está cadastrada no sistema</p>
+                </div>
+                <div class="col-md-4">
+                    <h6><i class="bi bi-2-circle text-info"></i> Passo 2</h6>
+                    <p class="text-muted small">Selecione o tipo de funcionário e setor adequados</p>
+                </div>
+                <div class="col-md-4">
+                    <h6><i class="bi bi-3-circle text-warning"></i> Passo 3</h6>
+                    <p class="text-muted small">Informe a data de admissão (obrigatório)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

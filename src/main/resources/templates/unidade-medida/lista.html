@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidades de Medida - SIGEJ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="bi bi-gear-fill"></i> SIGEJ
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}"><i class="bi bi-house"></i> Início</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/pessoas}"><i class="bi bi-people"></i> Pessoas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/unidades-medida}"><i class="bi bi-calculator"></i> Unidades de Medida</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Container -->
+<div class="container mt-4">
+    <!-- Alertas -->
+    <div th:if="${sucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill"></i> <span th:text="${sucesso}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div th:if="${erro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i> <span th:text="${erro}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Cabeçalho -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-calculator"></i> Unidades de Medida</h2>
+        <a th:href="@{/unidades-medida/novo}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Nova Unidade
+        </a>
+    </div>
+
+    <!-- Tabela -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 20%;">Sigla</th>
+                        <th style="width: 50%;">Descrição</th>
+                        <th class="text-center" style="width: 20%;">Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="unidade : ${unidades}">
+                        <td th:text="${unidade.id}"></td>
+                        <td>
+                            <span class="badge bg-info" th:text="${unidade.sigla}"></span>
+                        </td>
+                        <td>
+                            <i class="bi bi-calculator text-primary"></i>
+                            <span th:text="${unidade.descricao}"></span>
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                <a th:href="@{/unidades-medida/editar/{id}(id=${unidade.id})}"
+                                   class="btn btn-sm btn-warning"
+                                   title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a th:href="@{/unidades-medida/deletar/{id}(id=${unidade.id})}"
+                                   class="btn btn-sm btn-danger"
+                                   title="Excluir"
+                                   onclick="return confirm('Tem certeza que deseja excluir esta unidade de medida?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(unidades)}">
+                        <td colspan="4" class="text-center text-muted py-4">
+                            <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                            <p class="mt-2">Nenhuma unidade de medida cadastrada.</p>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card de exemplos -->
+    <div class="card mt-4 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-lightbulb"></i> Exemplos de Unidades de Medida</h5>
+            <p class="card-text text-muted">Unidades usadas para quantificar produtos no estoque.</p>
+            <div class="row mt-3">
+                <div class="col-md-6 mb-3">
+                    <strong class="d-block mb-2">Volume:</strong>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge bg-secondary">L - Litro</span>
+                        <span class="badge bg-secondary">ml - Mililitro</span>
+                        <span class="badge bg-secondary">m³ - Metro cúbico</span>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong class="d-block mb-2">Massa:</strong>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge bg-secondary">kg - Quilograma</span>
+                        <span class="badge bg-secondary">g - Grama</span>
+                        <span class="badge bg-secondary">t - Tonelada</span>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong class="d-block mb-2">Comprimento:</strong>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge bg-secondary">m - Metro</span>
+                        <span class="badge bg-secondary">cm - Centímetro</span>
+                        <span class="badge bg-secondary">mm - Milímetro</span>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong class="d-block mb-2">Outros:</strong>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge bg-secondary">un - Unidade</span>
+                        <span class="badge bg-secondary">cx - Caixa</span>
+                        <span class="badge bg-secondary">pç - Peça</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

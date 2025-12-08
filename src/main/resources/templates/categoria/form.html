@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Categoria - SIGEJ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="bi bi-gear-fill"></i> SIGEJ
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}"><i class="bi bi-house"></i> Início</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/pessoas}"><i class="bi bi-people"></i> Pessoas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/setores}"><i class="bi bi-building"></i> Setores</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/tipos-funcionario}"><i class="bi bi-tags"></i> Tipos de Funcionário</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/marcas}"><i class="bi bi-bookmark"></i> Marcas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/cores}"><i class="bi bi-palette"></i> Cores</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/tamanhos}"><i class="bi bi-rulers"></i> Tamanhos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/categorias}"><i class="bi bi-collection"></i> Categorias</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Container -->
+<div class="container mt-4">
+    <div class="mb-4">
+        <h2>
+            <i class="bi bi-collection"></i>
+            <span th:text="${categoria.id == 0} ? 'Nova Categoria' : 'Editar Categoria'"></span>
+        </h2>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form th:action="@{/categorias/salvar}" th:object="${categoria}" method="post">
+
+                        <input type="hidden" th:field="*{id}">
+
+                        <div class="mb-3">
+                            <label for="nome" class="form-label">
+                                Nome da Categoria <span class="text-danger">*</span>
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="nome"
+                                   th:field="*{nome}"
+                                   required
+                                   maxlength="60"
+                                   placeholder="Digite o nome da categoria"
+                                   autofocus>
+                            <small class="form-text text-muted">Máximo de 60 caracteres</small>
+                        </div>
+
+                        <div class="d-flex gap-2 justify-content-end mt-4">
+                            <a th:href="@{/categorias}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Salvar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de ajuda -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-info-circle text-primary"></i> Sobre Categorias
+                    </h5>
+                    <p class="text-muted">
+                        As categorias ajudam a organizar e classificar os materiais e produtos do estoque.
+                    </p>
+
+                    <hr>
+
+                    <h6 class="mb-2"><i class="bi bi-lightbulb text-warning"></i> Exemplos:</h6>
+
+                    <div class="mb-2">
+                        <strong class="d-block mb-2">Ferramentas:</strong>
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <span class="badge bg-secondary">Ferramentas Manuais</span>
+                            <span class="badge bg-secondary">Ferramentas Elétricas</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <strong class="d-block mb-2">Materiais:</strong>
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <span class="badge bg-secondary">Elétricos</span>
+                            <span class="badge bg-secondary">Hidráulicos</span>
+                            <span class="badge bg-secondary">Construção</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <strong class="d-block mb-2">Segurança:</strong>
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <span class="badge bg-secondary">EPIs</span>
+                            <span class="badge bg-secondary">Sinalização</span>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success"></i>
+                            Use nomes claros e objetivos
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success"></i>
+                            Evite categorias muito genéricas
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success"></i>
+                            Mantenha uma hierarquia lógica
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

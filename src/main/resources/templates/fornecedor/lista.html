@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fornecedores - SIGEJ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="bi bi-gear-fill"></i> SIGEJ
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}"><i class="bi bi-house"></i> Início</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/pessoas}"><i class="bi bi-people"></i> Pessoas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/fornecedores}"><i class="bi bi-truck"></i> Fornecedores</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Container -->
+<div class="container mt-4">
+    <!-- Alertas -->
+    <div th:if="${sucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill"></i> <span th:text="${sucesso}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div th:if="${erro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i> <span th:text="${erro}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Cabeçalho -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-truck"></i> Fornecedores</h2>
+        <a th:href="@{/fornecedores/novo}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Novo Fornecedor
+        </a>
+    </div>
+
+    <!-- Tabela -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 50%;">Nome</th>
+                        <th style="width: 20%;">CNPJ</th>
+                        <th class="text-center" style="width: 20%;">Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="fornecedor : ${fornecedores}">
+                        <td th:text="${fornecedor.id}"></td>
+                        <td>
+                            <i class="bi bi-building text-success"></i>
+                            <strong th:text="${fornecedor.nome}"></strong>
+                        </td>
+                        <td>
+                            <span class="text-muted" th:text="${fornecedor.cnpj}"></span>
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                <a th:href="@{/fornecedores/editar/{id}(id=${fornecedor.id})}"
+                                   class="btn btn-sm btn-warning"
+                                   title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a th:href="@{/fornecedores/deletar/{id}(id=${fornecedor.id})}"
+                                   class="btn btn-sm btn-danger"
+                                   title="Excluir"
+                                   onclick="return confirm('Tem certeza que deseja excluir este fornecedor?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(fornecedores)}">
+                        <td colspan="4" class="text-center text-muted py-4">
+                            <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                            <p class="mt-2">Nenhum fornecedor cadastrado.</p>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card informativo -->
+    <div class="card mt-4 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-info-circle text-primary"></i> Sobre Fornecedores</h5>
+            <p class="card-text text-muted">
+                Mantenha o cadastro de fornecedores atualizado para facilitar o processo de compras e controle de estoque.
+            </p>
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-check-circle-fill text-success me-2" style="font-size: 1.5rem;"></i>
+                        <div>
+                            <strong>Dados Completos</strong>
+                            <p class="text-muted small mb-0">Nome e CNPJ validados</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-shield-check text-info me-2" style="font-size: 1.5rem;"></i>
+                        <div>
+                            <strong>Segurança</strong>
+                            <p class="text-muted small mb-0">Dados protegidos</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-lightning-fill text-warning me-2" style="font-size: 1.5rem;"></i>
+                        <div>
+                            <strong>Rápido Acesso</strong>
+                            <p class="text-muted small mb-0">Busca facilitada</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tamanhos - SIGEJ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="bi bi-gear-fill"></i> SIGEJ
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}"><i class="bi bi-house"></i> Início</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/pessoas}"><i class="bi bi-people"></i> Pessoas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/setores}"><i class="bi bi-building"></i> Setores</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/tipos-funcionario}"><i class="bi bi-tags"></i> Tipos de Funcionário</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/marcas}"><i class="bi bi-bookmark"></i> Marcas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/cores}"><i class="bi bi-palette"></i> Cores</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/tamanhos}"><i class="bi bi-rulers"></i> Tamanhos</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Container -->
+<div class="container mt-4">
+    <!-- Alertas -->
+    <div th:if="${sucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill"></i> <span th:text="${sucesso}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div th:if="${erro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i> <span th:text="${erro}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Cabeçalho -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-rulers"></i> Tamanhos de Produtos</h2>
+        <a th:href="@{/tamanhos/novo}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Novo Tamanho
+        </a>
+    </div>
+
+    <!-- Tabela -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 70%;">Descrição</th>
+                        <th class="text-center" style="width: 20%;">Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="tamanho : ${tamanhos}">
+                        <td th:text="${tamanho.id}"></td>
+                        <td>
+                            <i class="bi bi-rulers text-primary"></i>
+                            <strong th:text="${tamanho.descricao}"></strong>
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                <a th:href="@{/tamanhos/editar/{id}(id=${tamanho.id})}"
+                                   class="btn btn-sm btn-warning"
+                                   title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a th:href="@{/tamanhos/deletar/{id}(id=${tamanho.id})}"
+                                   class="btn btn-sm btn-danger"
+                                   title="Excluir"
+                                   onclick="return confirm('Tem certeza que deseja excluir este tamanho?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(tamanhos)}">
+                        <td colspan="3" class="text-center text-muted py-4">
+                            <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                            <p class="mt-2">Nenhum tamanho cadastrado.</p>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card de exemplos -->
+    <div class="card mt-4 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-lightbulb"></i> Exemplos de Tamanhos</h5>
+            <p class="card-text text-muted">Tamanhos para diferenciar variações de produtos.</p>
+            <div class="d-flex flex-wrap gap-2 mt-3">
+                <span class="badge bg-secondary">PP</span>
+                <span class="badge bg-secondary">P</span>
+                <span class="badge bg-secondary">M</span>
+                <span class="badge bg-secondary">G</span>
+                <span class="badge bg-secondary">GG</span>
+                <span class="badge bg-secondary">XG</span>
+                <span class="badge bg-secondary">Pequeno</span>
+                <span class="badge bg-secondary">Médio</span>
+                <span class="badge bg-secondary">Grande</span>
+                <span class="badge bg-secondary">100ml</span>
+                <span class="badge bg-secondary">500ml</span>
+                <span class="badge bg-secondary">1L</span>
+                <span class="badge bg-secondary">5kg</span>
+                <span class="badge bg-secondary">10kg</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
