@@ -4,16 +4,16 @@ import java.time.LocalDate;
 
 public class Funcionario {
 
-    private int id;
-    private int pessoaId;
-    private int tipoFuncionarioId;
+    private Integer id;
+    private Integer pessoaId;
+    private Integer tipoFuncionarioId;
     private Integer setorId;
     private LocalDate dataAdmissao;
     private LocalDate dataDemissao;
 
     public Funcionario() {}
 
-    public Funcionario(int pessoaId, int tipoFuncionarioId, Integer setorId,
+    public Funcionario(Integer pessoaId, Integer tipoFuncionarioId, Integer setorId,
                        LocalDate dataAdmissao, LocalDate dataDemissao) {
         this.pessoaId = pessoaId;
         this.tipoFuncionarioId = tipoFuncionarioId;
@@ -22,7 +22,7 @@ public class Funcionario {
         this.dataDemissao = dataDemissao;
     }
 
-    public Funcionario(int id, int pessoaId, int tipoFuncionarioId, Integer setorId,
+    public Funcionario(Integer id, Integer pessoaId, Integer tipoFuncionarioId, Integer setorId,
                        LocalDate dataAdmissao, LocalDate dataDemissao) {
         this.id = id;
         this.pessoaId = pessoaId;
@@ -32,27 +32,27 @@ public class Funcionario {
         this.dataDemissao = dataDemissao;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getPessoaId() {
+    public Integer getPessoaId() {
         return pessoaId;
     }
 
-    public void setPessoaId(int pessoaId) {
+    public void setPessoaId(Integer pessoaId) {
         this.pessoaId = pessoaId;
     }
 
-    public int getTipoFuncionarioId() {
+    public Integer getTipoFuncionarioId() {
         return tipoFuncionarioId;
     }
 
-    public void setTipoFuncionarioId(int tipoFuncionarioId) {
+    public void setTipoFuncionarioId(Integer tipoFuncionarioId) {
         this.tipoFuncionarioId = tipoFuncionarioId;
     }
 
@@ -78,5 +78,4 @@ public class Funcionario {
 
     public void setDataDemissao(LocalDate dataDemissao) {
         this.dataDemissao = dataDemissao;
-    }
-}
+    }}

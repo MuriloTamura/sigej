@@ -32,6 +32,9 @@
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/tipos-funcionario}"><i class="bi bi-tags"></i> Tipos de Funcionário</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/marcas}"><i class="bi bi-bookmark"></i> Marcas</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -42,7 +45,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="display-4"><i class="bi bi-house-fill"></i> SIGEJ</h1>
-            <p class="lead">Sistema de Gestão de Jardinagem e Manutenção do Campus Maracanaú</p>
+            <p class="lead">Sistema de Gestão de Manutenção e Estoque</p>
             <hr>
         </div>
     </div>
@@ -101,8 +104,23 @@
                         <i class="bi bi-person-badge text-success"></i> Funcionários
                     </h5>
                     <p class="card-text">Cadastro e gestão de funcionários.</p>
-                    <a href="#" class="btn btn-success disabled">
-                        <i class="bi bi-arrow-right"></i> Em breve
+                    <a th:href="@{/funcionarios}" class="btn btn-success">
+                        <i class="bi bi-arrow-right"></i> Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Marcas -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-bookmark text-danger"></i> Marcas
+                    </h5>
+                    <p class="card-text">Cadastro de marcas de produtos.</p>
+                    <a th:href="@{/marcas}" class="btn btn-danger">
+                        <i class="bi bi-arrow-right"></i> Acessar
                     </a>
                 </div>
             </div>
