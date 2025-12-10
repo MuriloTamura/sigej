@@ -5,15 +5,15 @@ import java.time.LocalDate;
 public class EquipeMembro {
 
     private int id;
-    private int equipeId;
-    private int funcionarioId;
+    private Integer equipeId;      // Integer ao invés de int
+    private Integer funcionarioId;  // Integer ao invés de int
     private LocalDate dataInicio;
     private LocalDate dataFim;
     private String funcao;
 
     public EquipeMembro() {}
 
-    public EquipeMembro(int equipeId, int funcionarioId, LocalDate dataInicio, LocalDate dataFim, String funcao) {
+    public EquipeMembro(Integer equipeId, Integer funcionarioId, LocalDate dataInicio, LocalDate dataFim, String funcao) {
         this.equipeId = equipeId;
         this.funcionarioId = funcionarioId;
         this.dataInicio = dataInicio;
@@ -21,7 +21,7 @@ public class EquipeMembro {
         this.funcao = funcao;
     }
 
-    public EquipeMembro(int id, int equipeId, int funcionarioId, LocalDate dataInicio, LocalDate dataFim, String funcao) {
+    public EquipeMembro(int id, Integer equipeId, Integer funcionarioId, LocalDate dataInicio, LocalDate dataFim, String funcao) {
         this.id = id;
         this.equipeId = equipeId;
         this.funcionarioId = funcionarioId;
@@ -33,11 +33,11 @@ public class EquipeMembro {
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public int getEquipeId() { return equipeId; }
-    public void setEquipeId(int equipeId) { this.equipeId = equipeId; }
+    public Integer getEquipeId() { return equipeId; }
+    public void setEquipeId(Integer equipeId) { this.equipeId = equipeId; }
 
-    public int getFuncionarioId() { return funcionarioId; }
-    public void setFuncionarioId(int funcionarioId) { this.funcionarioId = funcionarioId; }
+    public Integer getFuncionarioId() { return funcionarioId; }
+    public void setFuncionarioId(Integer funcionarioId) { this.funcionarioId = funcionarioId; }
 
     public LocalDate getDataInicio() { return dataInicio; }
     public void setDataInicio(LocalDate dataInicio) { this.dataInicio = dataInicio; }

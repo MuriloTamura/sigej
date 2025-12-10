@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Estoque - SIGEJ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="bi bi-gear-fill"></i> SIGEJ
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}"><i class="bi bi-house"></i> Início</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/estoques}"><i class="bi bi-boxes"></i> Estoque</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Container -->
+<div class="container mt-4">
+    <div class="mb-4">
+        <h2>
+            <i class="bi bi-box-seam"></i>
+            <span th:text="${estoque.produtoVariacaoId > 0} ? 'Editar Item do Estoque' : 'Novo Item no Estoque'"></span>
+        </h2>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form th:action="@{/estoques/salvar}" th:object="${estoque}" method="post">
+
+                <!-- Campos ocultos para identificar edição -->
+                <input type="hidden" name="produtoVariacaoIdOriginal"
+                       th:value="${estoque.produtoVariacaoId > 0 ? estoque.produtoVariacaoId : ''}">
+                <input type="hidden" name="localEstoqueIdOriginal"
+                       th:value="${estoque.localEstoqueId > 0 ? estoque.localEstoqueId : ''}">
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="produtoVariacaoId" class="form-label">
+                            Produto Variação <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select"
+                                id="produtoVariacaoId"
+                                name="produtoVariacaoId"
+                                required
+                                th:disabled="${estoque.produtoVariacaoId > 0}">
+                            <option value="">Selecione o produto...</option>
+                            <option th:each="pv : ${produtosVariacao}"
+                                    th:value="${pv.id}"
+                                    th:text="${pv.codigoInterno}"
+                                    th:selected="${pv.id == estoque.produtoVariacaoId}">
+                            </option>
+                        </select>
+                        <small class="text-muted" th:if="${estoque.produtoVariacaoId > 0}">
+                            * Produto não pode ser alterado após cadastro
+                        </small>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="localEstoqueId" class="form-label">
+                            Local de Estoque <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select"
+                                id="localEstoqueId"
+                                name="localEstoqueId"
+                                required
+                                th:disabled="${estoque.localEstoqueId > 0}">
+                            <option value="">Selecione o local...</option>
+                            <option th:each="local : ${locaisEstoque}"
+                                    th:value="${local.id}"
+                                    th:text="${local.descricao}"
+                                    th:selected="${local.id == estoque.localEstoqueId}">
+                            </option>
+                        </select>
+                        <small class="text-muted" th:if="${estoque.localEstoqueId > 0}">
+                            * Local não pode ser alterado após cadastro
+                        </small>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="quantidade" class="form-label">
+                            Quantidade <span class="text-danger">*</span>
+                        </label>
+                        <input type="number"
+                               class="form-control"
+                               id="quantidade"
+                               th:field="*{quantidade}"
+                               step="0.001"
+                               min="0"
+                               required
+                               placeholder="0.000">
+                        <small class="text-muted">Use ponto (.) para decimais. Ex: 10.500</small>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="pontoReposicao" class="form-label">
+                            Ponto de Reposição <span class="text-danger">*</span>
+                        </label>
+                        <input type="number"
+                               class="form-control"
+                               id="pontoReposicao"
+                               th:field="*{pontoReposicao}"
+                               step="0.001"
+                               min="0"
+                               required
+                               placeholder="0.000">
+                        <small class="text-muted">Quantidade mínima antes de reabastecer</small>
+                    </div>
+                </div>
+
+                <div class="alert alert-info" role="alert">
+                    <i class="bi bi-info-circle"></i>
+                    <strong>Atenção:</strong> O produto e o local não poderão ser alterados após o cadastro.
+                    Apenas quantidade e ponto de reposição podem ser atualizados.
+                </div>
+
+                <div class="d-flex gap-2 justify-content-end mt-4">
+                    <a th:href="@{/estoques}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

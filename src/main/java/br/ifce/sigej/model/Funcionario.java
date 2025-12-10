@@ -11,6 +11,11 @@ public class Funcionario {
     private LocalDate dataAdmissao;
     private LocalDate dataDemissao;
 
+    // Campos extras para exibição (não existem no banco)
+    private String pessoaNome;
+    private String tipoFuncionarioDescricao;
+    private String setorNome;
+
     public Funcionario() {}
 
     public Funcionario(Integer pessoaId, Integer tipoFuncionarioId, Integer setorId,
@@ -78,4 +83,30 @@ public class Funcionario {
 
     public void setDataDemissao(LocalDate dataDemissao) {
         this.dataDemissao = dataDemissao;
-    }}
+    }
+
+    // Getters e Setters dos campos extras
+    public String getPessoaNome() {
+        return pessoaNome;
+    }
+
+    public void setPessoaNome(String pessoaNome) {
+        this.pessoaNome = pessoaNome;
+    }
+
+    public String getTipoFuncionarioDescricao() {
+        return tipoFuncionarioDescricao;
+    }
+
+    public void setTipoFuncionarioDescricao(String tipoFuncionarioDescricao) {
+        this.tipoFuncionarioDescricao = tipoFuncionarioDescricao;
+    }
+
+    public String getSetorNome() {
+        return setorNome;
+    }
+
+    public void setSetorNome(String setorNome) {
+        this.setorNome = setorNome;
+    }
+}

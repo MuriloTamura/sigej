@@ -30,9 +30,6 @@ public class FuncionarioController {
     @GetMapping
     public String listar(Model model) {
         model.addAttribute("funcionarios", funcionarioDAO.listar());
-        model.addAttribute("pessoas", pessoaDAO.listar());
-        model.addAttribute("tipos", tipoFuncionarioDAO.listar());
-        model.addAttribute("setores", setorDAO.listar());
         return "funcionario/lista";
     }
 
@@ -64,7 +61,7 @@ public class FuncionarioController {
     @PostMapping("/salvar")
     public String salvar(@ModelAttribute Funcionario funcionario, RedirectAttributes redirectAttributes) {
         try {
-            if (funcionario.getId() == 0) {
+            if (funcionario.getId() == null || funcionario.getId() == 0) {
                 funcionarioDAO.inserir(funcionario);
                 redirectAttributes.addFlashAttribute("sucesso", "Funcionário cadastrado com sucesso!");
             } else {

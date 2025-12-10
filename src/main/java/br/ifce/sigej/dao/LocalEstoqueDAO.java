@@ -2,11 +2,14 @@ package br.ifce.sigej.dao;
 
 import br.ifce.sigej.database.ConnectionFactory;
 import br.ifce.sigej.model.LocalEstoque;
+import org.springframework.stereotype.Component;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@Component
 public class LocalEstoqueDAO {
 
     public void inserir(LocalEstoque l) {
@@ -17,40 +20,54 @@ public class LocalEstoqueDAO {
 
             stmt.setString(1, l.getDescricao());
             stmt.setObject(2, l.getResponsavelId());
-
             stmt.executeUpdate();
-            System.out.println("Local de estoque inserido!");
 
         } catch (SQLException e) {
-            System.out.println("Erro ao inserir local_estoque: " + e.getMessage());
+            throw new RuntimeException("Erro ao inserir local de estoque: " + e.getMessage(), e);
         }
     }
 
     public List<LocalEstoque> listar() {
         List<LocalEstoque> lista = new ArrayList<>();
-        String sql = "SELECT * FROM local_estoque ORDER BY id";
+        String sql = "SELECT * FROM local_estoque ORDER BY descricao";
 
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                lista.add(new LocalEstoque(
-                        rs.getInt("id"),
-                        rs.getString("descricao"),
-                        (Integer) rs.getObject("responsavel_id")
-                ));
+                lista.add(mapearLocalEstoque(rs));
             }
 
         } catch (SQLException e) {
-            System.out.println("Erro ao listar local_estoque: " + e.getMessage());
+            throw new RuntimeException("Erro ao listar locais de estoque: " + e.getMessage(), e);
         }
 
         return lista;
     }
 
+    public Optional<LocalEstoque> buscarPorId(int id) {
+        String sql = "SELECT * FROM local_estoque WHERE id = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return Optional.of(mapearLocalEstoque(rs));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar local de estoque: " + e.getMessage(), e);
+        }
+
+        return Optional.empty();
+    }
+
     public void atualizar(LocalEstoque l) {
-        String sql = "UPDATE local_estoque SET descricao = ?, responsavel_id = ? WHERE id = ?";
+        String sql = "UPDATE local_estoque SET descricao=?, responsavel_id=? WHERE id=?";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -58,32 +75,35 @@ public class LocalEstoqueDAO {
             stmt.setString(1, l.getDescricao());
             stmt.setObject(2, l.getResponsavelId());
             stmt.setInt(3, l.getId());
-
             stmt.executeUpdate();
-            System.out.println("Local de estoque atualizado!");
 
         } catch (SQLException e) {
-            System.out.println("Erro ao atualizar local_estoque: " + e.getMessage());
+            throw new RuntimeException("Erro ao atualizar local de estoque: " + e.getMessage(), e);
         }
     }
 
     public void deletar(int id) {
-        String sql = "DELETE FROM local_estoque WHERE id = ?";
+        String sql = "DELETE FROM local_estoque WHERE id=?";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             stmt.executeUpdate();
-            System.out.println("Local de estoque removido!");
 
         } catch (SQLException e) {
-
-            if (e.getMessage().contains("foreign key")) {
-                System.out.println("Não é possível excluir: existem produtos em estoque ou movimentações associadas a este local.");
-            } else {
-                System.out.println("Erro ao deletar local_estoque: " + e.getMessage());
+            if (e.getMessage().contains("violates foreign key constraint")) {
+                throw new RuntimeException("Não é possível excluir: existem produtos em estoque ou movimentações associadas a este local.");
             }
+            throw new RuntimeException("Erro ao deletar local de estoque: " + e.getMessage(), e);
         }
+    }
+
+    private LocalEstoque mapearLocalEstoque(ResultSet rs) throws SQLException {
+        LocalEstoque l = new LocalEstoque();
+        l.setId(rs.getInt("id"));
+        l.setDescricao(rs.getString("descricao"));
+        l.setResponsavelId((Integer) rs.getObject("responsavel_id"));
+        return l;
     }
 }

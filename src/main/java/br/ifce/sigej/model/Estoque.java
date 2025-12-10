@@ -1,11 +1,15 @@
 package br.ifce.sigej.model;
 
 public class Estoque {
-
     private int produtoVariacaoId;
     private int localEstoqueId;
     private double quantidade;
     private double pontoReposicao;
+
+    // Campos extras para exibição (não são salvos no banco)
+    private String produtoDescricao;
+    private String localDescricao;
+    private String codigoInterno;
 
     public Estoque() {}
 
@@ -27,4 +31,13 @@ public class Estoque {
 
     public double getPontoReposicao() { return pontoReposicao; }
     public void setPontoReposicao(double pontoReposicao) { this.pontoReposicao = pontoReposicao; }
+
+    public String getProdutoDescricao() { return produtoDescricao; }
+    public void setProdutoDescricao(String produtoDescricao) { this.produtoDescricao = produtoDescricao; }
+
+    public String getLocalDescricao() { return localDescricao; }
+    public void setLocalDescricao(String localDescricao) { this.localDescricao = localDescricao; }
+
+    public String getCodigoInterno() { return codigoInterno; }
+    public void setCodigoInterno(String codigoInterno) { this.codigoInterno = codigoInterno; }
 }

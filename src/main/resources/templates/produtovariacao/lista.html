@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Funcionários - SIGEJ</title>
+    <title>Variações de Produtos - SIGEJ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link href="/css/style.css" rel="stylesheet">
@@ -27,7 +27,7 @@
                     <a class="nav-link" th:href="@{/pessoas}"><i class="bi bi-people"></i> Pessoas</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" th:href="@{/funcionarios}"><i class="bi bi-person-badge"></i> Funcionários</a>
+                    <a class="nav-link active" th:href="@{/produto-variacoes}"><i class="bi bi-boxes"></i> Variações de Produtos</a>
                 </li>
             </ul>
         </div>
@@ -49,9 +49,9 @@
 
     <!-- Cabeçalho -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-person-badge"></i> Funcionários</h2>
-        <a th:href="@{/funcionarios/novo}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Novo Funcionário
+        <h2><i class="bi bi-boxes"></i> Lista de Variações de Produtos</h2>
+        <a th:href="@{/produto-variacoes/novo}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Nova Variação
         </a>
     </div>
 
@@ -63,47 +63,61 @@
                     <thead class="table-light">
                     <tr>
                         <th>ID</th>
-                        <th>Pessoa</th>
-                        <th>Tipo</th>
-                        <th>Setor</th>
-                        <th>Admissão</th>
+                        <th>Produto ID</th>
+                        <th>Cor ID</th>
+                        <th>Tamanho ID</th>
+                        <th>Código de Barras</th>
+                        <th>Código Interno</th>
                         <th class="text-center">Ações</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="func : ${funcionarios}">
-                        <td th:text="${func.id}"></td>
+                    <tr th:each="variacao : ${variacoes}">
+                        <td th:text="${variacao.id}"></td>
                         <td>
-                            <i class="bi bi-person-circle text-primary"></i>
-                            <span th:text="${func.pessoaNome != null ? func.pessoaNome : 'ID: ' + func.pessoaId}"></span>
+                            <span th:if="${variacao.produtoId != null}" th:text="${variacao.produtoId}"></span>
+                            <span th:unless="${variacao.produtoId != null}" class="text-muted">-</span>
                         </td>
                         <td>
-                            <span class="badge bg-info"
-                                  th:text="${func.tipoFuncionarioDescricao != null ? func.tipoFuncionarioDescricao : 'ID: ' + func.tipoFuncionarioId}">
-                            </span>
+                            <span th:if="${variacao.corId != null}" th:text="${variacao.corId}"></span>
+                            <span th:unless="${variacao.corId != null}" class="text-muted">-</span>
                         </td>
-                        <td th:text="${func.setorNome != null ? func.setorNome : 'ID: ' + func.setorId}"></td>
-                        <td th:text="${func.dataAdmissao != null ? #temporals.format(func.dataAdmissao, 'dd/MM/yyyy') : '-'}"></td>
+                        <td>
+                            <span th:if="${variacao.tamanhoId != null}" th:text="${variacao.tamanhoId}"></span>
+                            <span th:unless="${variacao.tamanhoId != null}" class="text-muted">-</span>
+                        </td>
+                        <td>
+                            <span th:if="${variacao.codigoBarras != null and !variacao.codigoBarras.isEmpty()}"
+                                  th:text="${variacao.codigoBarras}"></span>
+                            <span th:unless="${variacao.codigoBarras != null and !variacao.codigoBarras.isEmpty()}"
+                                  class="text-muted">-</span>
+                        </td>
+                        <td>
+                            <span th:if="${variacao.codigoInterno != null and !variacao.codigoInterno.isEmpty()}"
+                                  th:text="${variacao.codigoInterno}"></span>
+                            <span th:unless="${variacao.codigoInterno != null and !variacao.codigoInterno.isEmpty()}"
+                                  class="text-muted">-</span>
+                        </td>
                         <td class="text-center">
                             <div class="btn-group" role="group">
-                                <a th:href="@{/funcionarios/editar/{id}(id=${func.id})}"
+                                <a th:href="@{/produto-variacoes/editar/{id}(id=${variacao.id})}"
                                    class="btn btn-sm btn-warning"
                                    title="Editar">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <a th:href="@{/funcionarios/deletar/{id}(id=${func.id})}"
+                                <a th:href="@{/produto-variacoes/deletar/{id}(id=${variacao.id})}"
                                    class="btn btn-sm btn-danger"
                                    title="Excluir"
-                                   onclick="return confirm('Tem certeza que deseja excluir este funcionário?')">
+                                   onclick="return confirm('Tem certeza que deseja excluir esta variação?')">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </div>
                         </td>
                     </tr>
-                    <tr th:if="${#lists.isEmpty(funcionarios)}">
-                        <td colspan="6" class="text-center text-muted py-4">
+                    <tr th:if="${#lists.isEmpty(variacoes)}">
+                        <td colspan="7" class="text-center text-muted py-4">
                             <i class="bi bi-inbox" style="font-size: 2rem;"></i>
-                            <p class="mt-2">Nenhum funcionário cadastrado.</p>
+                            <p class="mt-2">Nenhuma variação cadastrada.</p>
                         </td>
                     </tr>
                     </tbody>

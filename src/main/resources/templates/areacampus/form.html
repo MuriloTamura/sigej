@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Área do Campus - SIGEJ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="bi bi-gear-fill"></i> SIGEJ
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}"><i class="bi bi-house"></i> Início</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/areas-campus}"><i class="bi bi-map"></i> Áreas do Campus</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Container -->
+<div class="container mt-4">
+    <div class="mb-4">
+        <h2>
+            <i class="bi bi-map"></i>
+            <span th:text="${areaCampus != null and areaCampus.id != 0} ? 'Editar Área do Campus' : 'Nova Área do Campus'"></span>
+        </h2>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form th:action="@{/areas-campus/salvar}" th:object="${areaCampus}" method="post">
+
+                <input type="hidden" th:field="*{id}">
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="tipoAreaId" class="form-label">
+                            Tipo de Área <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select"
+                                id="tipoAreaId"
+                                th:field="*{tipoAreaId}"
+                                required>
+                            <option value="">Selecione o tipo de área</option>
+                            <option th:each="tipo : ${tiposArea}"
+                                    th:value="${tipo.id}"
+                                    th:text="${tipo.descricao}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="bloco" class="form-label">Bloco</label>
+                        <input type="text"
+                               class="form-control"
+                               id="bloco"
+                               th:field="*{bloco}"
+                               maxlength="50"
+                               placeholder="Ex: Bloco A, Bloco Administrativo">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label for="descricao" class="form-label">
+                            Descrição <span class="text-danger">*</span>
+                        </label>
+                        <textarea class="form-control"
+                                  id="descricao"
+                                  th:field="*{descricao}"
+                                  rows="4"
+                                  required
+                                  maxlength="500"
+                                  placeholder="Descreva a área do campus..."></textarea>
+                        <div class="form-text">Máximo de 500 caracteres</div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 justify-content-end mt-4">
+                    <a th:href="@{/areas-campus}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

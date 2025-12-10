@@ -2,11 +2,14 @@ package br.ifce.sigej.dao;
 
 import br.ifce.sigej.database.ConnectionFactory;
 import br.ifce.sigej.model.AreaCampus;
+import org.springframework.stereotype.Component;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@Component
 public class AreaCampusDAO {
 
     public void inserir(AreaCampus a) {
@@ -20,10 +23,9 @@ public class AreaCampusDAO {
             stmt.setString(3, a.getBloco());
 
             stmt.executeUpdate();
-            System.out.println("Área do campus inserida!");
 
         } catch (SQLException e) {
-            System.out.println("Erro ao inserir area_campus: " + e.getMessage());
+            throw new RuntimeException("Erro ao inserir área do campus: " + e.getMessage(), e);
         }
     }
 
@@ -32,27 +34,46 @@ public class AreaCampusDAO {
         String sql = "SELECT * FROM area_campus ORDER BY id";
 
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                lista.add(new AreaCampus(
-                        rs.getInt("id"),
-                        rs.getInt("tipo_area_id"),
-                        rs.getString("descricao"),
-                        rs.getString("bloco")
-                ));
+                lista.add(mapearAreaCampus(rs));
             }
 
         } catch (SQLException e) {
-            System.out.println("Erro ao listar area_campus: " + e.getMessage());
+            throw new RuntimeException("Erro ao listar áreas do campus: " + e.getMessage(), e);
         }
 
         return lista;
     }
 
+    public Optional<AreaCampus> buscarPorId(int id) {
+        String sql = "SELECT * FROM area_campus WHERE id = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return Optional.of(mapearAreaCampus(rs));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar área do campus: " + e.getMessage(), e);
+        }
+
+        return Optional.empty();
+    }
+
     public void atualizar(AreaCampus a) {
-        String sql = "UPDATE area_campus SET tipo_area_id = ?, descricao = ?, bloco = ? WHERE id = ?";
+        String sql = """
+        UPDATE area_campus 
+        SET tipo_area_id=?, descricao=?, bloco=? 
+        WHERE id=?
+        """;
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -63,15 +84,14 @@ public class AreaCampusDAO {
             stmt.setInt(4, a.getId());
 
             stmt.executeUpdate();
-            System.out.println("Área do campus atualizada!");
 
         } catch (SQLException e) {
-            System.out.println("Erro ao atualizar area_campus: " + e.getMessage());
+            throw new RuntimeException("Erro ao atualizar área do campus: " + e.getMessage(), e);
         }
     }
 
     public void deletar(int id) {
-        String sql = "DELETE FROM area_campus WHERE id = ?";
+        String sql = "DELETE FROM area_campus WHERE id=?";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -79,15 +99,26 @@ public class AreaCampusDAO {
             stmt.setInt(1, id);
             stmt.executeUpdate();
 
-            System.out.println("Área do campus deletada!");
-
         } catch (SQLException e) {
-
-            if (e.getMessage().contains("foreign key")) {
-                System.out.println("Não é possível excluir: existe ordem_servico usando essa área!");
-            } else {
-                System.out.println("Erro ao deletar area_campus: " + e.getMessage());
+            if (e.getMessage().contains("violates foreign key constraint")) {
+                throw new RuntimeException("Não é possível excluir: esta área está sendo referenciada em outras tabelas.");
             }
+            throw new RuntimeException("Erro ao deletar área do campus: " + e.getMessage(), e);
         }
+    }
+
+    private AreaCampus mapearAreaCampus(ResultSet rs) throws SQLException {
+        AreaCampus a = new AreaCampus();
+        a.setId(rs.getInt("id"));
+
+        // Tratamento para evitar null
+        int tipoAreaIdValue = rs.getInt("tipo_area_id");
+        if (!rs.wasNull()) {
+            a.setTipoAreaId(tipoAreaIdValue);
+        }
+
+        a.setDescricao(rs.getString("descricao"));
+        a.setBloco(rs.getString("bloco"));
+        return a;
     }
 }

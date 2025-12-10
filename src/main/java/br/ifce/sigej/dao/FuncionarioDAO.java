@@ -37,21 +37,24 @@ public class FuncionarioDAO {
 
     public List<Funcionario> listar() {
         List<Funcionario> lista = new ArrayList<>();
-        String sql = "SELECT * FROM funcionario ORDER BY id";
+        String sql = """
+                SELECT f.*, 
+                       p.nome as pessoa_nome,
+                       tf.descricao as tipo_funcionario_descricao,
+                       s.nome as setor_nome
+                FROM funcionario f
+                LEFT JOIN pessoa p ON f.pessoa_id = p.id
+                LEFT JOIN tipo_funcionario tf ON f.tipo_funcionario_id = tf.id
+                LEFT JOIN setor s ON f.setor_id = s.id
+                ORDER BY f.id
+                """;
 
         try (Connection conn = ConnectionFactory.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                Funcionario f = new Funcionario();
-                f.setId(rs.getInt("id"));
-                f.setPessoaId((Integer) rs.getObject("pessoa_id"));
-                f.setTipoFuncionarioId((Integer) rs.getObject("tipo_funcionario_id"));
-                f.setSetorId((Integer) rs.getObject("setor_id"));
-                f.setDataAdmissao(rs.getDate("data_admissao") != null ? rs.getDate("data_admissao").toLocalDate() : null);
-                f.setDataDemissao(rs.getDate("data_demissao") != null ? rs.getDate("data_demissao").toLocalDate() : null);
-                lista.add(f);
+                lista.add(mapearFuncionarioComJoin(rs));
             }
 
         } catch (SQLException e) {
@@ -71,14 +74,7 @@ public class FuncionarioDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                Funcionario f = new Funcionario();
-                f.setId(rs.getInt("id"));
-                f.setPessoaId((Integer) rs.getObject("pessoa_id"));
-                f.setTipoFuncionarioId((Integer) rs.getObject("tipo_funcionario_id"));
-                f.setSetorId((Integer) rs.getObject("setor_id"));
-                f.setDataAdmissao(rs.getDate("data_admissao") != null ? rs.getDate("data_admissao").toLocalDate() : null);
-                f.setDataDemissao(rs.getDate("data_demissao") != null ? rs.getDate("data_demissao").toLocalDate() : null);
-                return Optional.of(f);
+                return Optional.of(mapearFuncionario(rs));
             }
 
         } catch (SQLException e) {
@@ -128,5 +124,24 @@ public class FuncionarioDAO {
             }
             throw new RuntimeException("Erro ao deletar funcionário: " + e.getMessage(), e);
         }
+    }
+
+    private Funcionario mapearFuncionario(ResultSet rs) throws SQLException {
+        Funcionario f = new Funcionario();
+        f.setId(rs.getInt("id"));
+        f.setPessoaId((Integer) rs.getObject("pessoa_id"));
+        f.setTipoFuncionarioId((Integer) rs.getObject("tipo_funcionario_id"));
+        f.setSetorId((Integer) rs.getObject("setor_id"));
+        f.setDataAdmissao(rs.getDate("data_admissao") != null ? rs.getDate("data_admissao").toLocalDate() : null);
+        f.setDataDemissao(rs.getDate("data_demissao") != null ? rs.getDate("data_demissao").toLocalDate() : null);
+        return f;
+    }
+
+    private Funcionario mapearFuncionarioComJoin(ResultSet rs) throws SQLException {
+        Funcionario f = mapearFuncionario(rs);
+        f.setPessoaNome(rs.getString("pessoa_nome"));
+        f.setTipoFuncionarioDescricao(rs.getString("tipo_funcionario_descricao"));
+        f.setSetorNome(rs.getString("setor_nome"));
+        return f;
     }
 }

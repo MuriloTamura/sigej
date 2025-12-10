@@ -2,17 +2,19 @@ package br.ifce.sigej.dao;
 
 import br.ifce.sigej.database.ConnectionFactory;
 import br.ifce.sigej.model.EquipeMembro;
+import org.springframework.stereotype.Component;
 
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@Component
 public class EquipeMembroDAO {
 
     public void inserir(EquipeMembro m) {
-        String sql = "INSERT INTO equipe_membro (equipe_id, funcionario_id, data_inicio, data_fim, funcao) " +
-                "VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO equipe_membro (equipe_id, funcionario_id, data_inicio, data_fim, funcao) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -31,7 +33,7 @@ public class EquipeMembroDAO {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            System.out.println("Erro ao inserir equipe_membro: " + e.getMessage());
+            throw new RuntimeException("Erro ao inserir membro da equipe: " + e.getMessage(), e);
         }
     }
 
@@ -40,31 +42,46 @@ public class EquipeMembroDAO {
         String sql = "SELECT * FROM equipe_membro ORDER BY id";
 
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            ResultSet rs = stmt.executeQuery();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                lista.add(new EquipeMembro(
-                        rs.getInt("id"),
-                        rs.getInt("equipe_id"),
-                        rs.getInt("funcionario_id"),
-                        rs.getDate("data_inicio").toLocalDate(),
-                        rs.getDate("data_fim") != null ? rs.getDate("data_fim").toLocalDate() : null,
-                        rs.getString("funcao")
-                ));
+                lista.add(mapearEquipeMembro(rs));
             }
 
         } catch (SQLException e) {
-            System.out.println("Erro ao listar equipe_membro: " + e.getMessage());
+            throw new RuntimeException("Erro ao listar membros da equipe: " + e.getMessage(), e);
         }
 
         return lista;
     }
 
+    public Optional<EquipeMembro> buscarPorId(int id) {
+        String sql = "SELECT * FROM equipe_membro WHERE id = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return Optional.of(mapearEquipeMembro(rs));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar membro da equipe: " + e.getMessage(), e);
+        }
+
+        return Optional.empty();
+    }
+
     public void atualizar(EquipeMembro m) {
-        String sql = "UPDATE equipe_membro SET equipe_id = ?, funcionario_id = ?, data_inicio = ?, data_fim = ?, funcao = ? " +
-                "WHERE id = ?";
+        String sql = """
+        UPDATE equipe_membro 
+        SET equipe_id=?, funcionario_id=?, data_inicio=?, data_fim=?, funcao=? 
+        WHERE id=?
+        """;
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -84,12 +101,12 @@ public class EquipeMembroDAO {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            System.out.println("Erro ao atualizar equipe_membro: " + e.getMessage());
+            throw new RuntimeException("Erro ao atualizar membro da equipe: " + e.getMessage(), e);
         }
     }
 
     public void deletar(int id) {
-        String sql = "DELETE FROM equipe_membro WHERE id = ?";
+        String sql = "DELETE FROM equipe_membro WHERE id=?";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -97,12 +114,25 @@ public class EquipeMembroDAO {
             stmt.setInt(1, id);
             stmt.executeUpdate();
 
-        } catch (SQLException ex) {
-            if (ex.getMessage().contains("foreign key")) {
-                System.out.println("Não é possível excluir: o membro está associado a outra entidade.");
-            } else {
-                System.out.println("Erro ao deletar equipe_membro: " + ex.getMessage());
+        } catch (SQLException e) {
+            if (e.getMessage().contains("violates foreign key constraint")) {
+                throw new RuntimeException("Não é possível excluir: este membro está sendo referenciado em outras tabelas.");
             }
+            throw new RuntimeException("Erro ao deletar membro da equipe: " + e.getMessage(), e);
         }
+    }
+
+    private EquipeMembro mapearEquipeMembro(ResultSet rs) throws SQLException {
+        EquipeMembro m = new EquipeMembro();
+        m.setId(rs.getInt("id"));
+        m.setEquipeId(rs.getInt("equipe_id"));
+        m.setFuncionarioId(rs.getInt("funcionario_id"));
+        m.setDataInicio(rs.getDate("data_inicio").toLocalDate());
+
+        Date dataFim = rs.getDate("data_fim");
+        m.setDataFim(dataFim != null ? dataFim.toLocalDate() : null);
+
+        m.setFuncao(rs.getString("funcao"));
+        return m;
     }
 }

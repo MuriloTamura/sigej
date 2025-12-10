@@ -2,16 +2,18 @@ package br.ifce.sigej.dao;
 
 import br.ifce.sigej.database.ConnectionFactory;
 import br.ifce.sigej.model.ProdutoVariacao;
+import org.springframework.stereotype.Component;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@Component
 public class ProdutoVariacaoDAO {
 
     public void inserir(ProdutoVariacao v) {
-        String sql = "INSERT INTO produto_variacao (produto_id, cor_id, tamanho_id, codigo_barras, codigo_interno) " +
-                "VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO produto_variacao (produto_id, cor_id, tamanho_id, codigo_barras, codigo_interno) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -23,10 +25,9 @@ public class ProdutoVariacaoDAO {
             stmt.setString(5, v.getCodigoInterno());
 
             stmt.executeUpdate();
-            System.out.println("Produto variação inserido!");
 
         } catch (SQLException e) {
-            System.out.println("Erro ao inserir produto_variacao: " + e.getMessage());
+            throw new RuntimeException("Erro ao inserir variação do produto: " + e.getMessage(), e);
         }
     }
 
@@ -35,30 +36,46 @@ public class ProdutoVariacaoDAO {
         String sql = "SELECT * FROM produto_variacao ORDER BY id";
 
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                lista.add(new ProdutoVariacao(
-                        rs.getInt("id"),
-                        (Integer) rs.getObject("produto_id"),
-                        (Integer) rs.getObject("cor_id"),
-                        (Integer) rs.getObject("tamanho_id"),
-                        rs.getString("codigo_barras"),
-                        rs.getString("codigo_interno")
-                ));
+                lista.add(mapearProdutoVariacao(rs));
             }
 
         } catch (SQLException e) {
-            System.out.println("Erro ao listar produto_variacao: " + e.getMessage());
+            throw new RuntimeException("Erro ao listar variações do produto: " + e.getMessage(), e);
         }
 
         return lista;
     }
 
+    public Optional<ProdutoVariacao> buscarPorId(int id) {
+        String sql = "SELECT * FROM produto_variacao WHERE id = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return Optional.of(mapearProdutoVariacao(rs));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar variação do produto: " + e.getMessage(), e);
+        }
+
+        return Optional.empty();
+    }
+
     public void atualizar(ProdutoVariacao v) {
-        String sql = "UPDATE produto_variacao SET produto_id = ?, cor_id = ?, tamanho_id = ?, " +
-                "codigo_barras = ?, codigo_interno = ? WHERE id = ?";
+        String sql = """
+        UPDATE produto_variacao 
+        SET produto_id=?, cor_id=?, tamanho_id=?, codigo_barras=?, codigo_interno=? 
+        WHERE id=?
+        """;
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -71,30 +88,37 @@ public class ProdutoVariacaoDAO {
             stmt.setInt(6, v.getId());
 
             stmt.executeUpdate();
-            System.out.println("Produto variação atualizada!");
 
         } catch (SQLException e) {
-            System.out.println("Erro ao atualizar produto_variacao: " + e.getMessage());
+            throw new RuntimeException("Erro ao atualizar variação do produto: " + e.getMessage(), e);
         }
     }
 
     public void deletar(int id) {
-        String sql = "DELETE FROM produto_variacao WHERE id = ?";
+        String sql = "DELETE FROM produto_variacao WHERE id=?";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             stmt.executeUpdate();
-            System.out.println("Produto variação removida!");
 
         } catch (SQLException e) {
-
-            if (e.getMessage().contains("foreign key")) {
-                System.out.println("Não é possível excluir: existem registros (estoque, itens de OS, movimentos etc.) usando esta variação.");
-            } else {
-                System.out.println("Erro ao deletar produto_variacao: " + e.getMessage());
+            if (e.getMessage().contains("violates foreign key constraint")) {
+                throw new RuntimeException("Não é possível excluir: esta variação está sendo referenciada em outras tabelas.");
             }
+            throw new RuntimeException("Erro ao deletar variação do produto: " + e.getMessage(), e);
         }
+    }
+
+    private ProdutoVariacao mapearProdutoVariacao(ResultSet rs) throws SQLException {
+        ProdutoVariacao v = new ProdutoVariacao();
+        v.setId(rs.getInt("id"));
+        v.setProdutoId((Integer) rs.getObject("produto_id"));
+        v.setCorId((Integer) rs.getObject("cor_id"));
+        v.setTamanhoId((Integer) rs.getObject("tamanho_id"));
+        v.setCodigoBarras(rs.getString("codigo_barras"));
+        v.setCodigoInterno(rs.getString("codigo_interno"));
+        return v;
     }
 }
