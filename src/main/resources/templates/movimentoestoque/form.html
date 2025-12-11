@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Movimento de Estoque - SIGEJ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="bi bi-gear-fill"></i> SIGEJ
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}"><i class="bi bi-house"></i> Início</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/pessoas}"><i class="bi bi-people"></i> Pessoas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/movimento-estoque}"><i class="bi bi-arrow-left-right"></i> Movimentos de Estoque</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Container -->
+<div class="container mt-4">
+    <div class="mb-4">
+        <h2>
+            <i class="bi bi-arrow-left-right"></i>
+            <span th:text="${movimento.id == 0} ? 'Novo Movimento' : 'Editar Movimento'"></span>
+        </h2>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form th:action="@{/movimento-estoque/salvar}" th:object="${movimento}" method="post">
+
+                <input type="hidden" th:field="*{id}">
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="produtoVariacaoId" class="form-label">
+                            <i class="bi bi-box"></i> Variação do Produto <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select"
+                                id="produtoVariacaoId"
+                                th:field="*{produtoVariacaoId}"
+                                required>
+                            <option value="" th:selected="${movimento.produtoVariacaoId == null}">Selecione uma variação</option>
+                            <option th:each="variacao : ${variacoes}"
+                                    th:value="${variacao.id}"
+                                    th:text="${'ID: ' + variacao.id + ' - Produto: ' + variacao.produtoId}"
+                                    th:selected="${movimento.produtoVariacaoId != null && movimento.produtoVariacaoId == variacao.id}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="localEstoqueId" class="form-label">
+                            <i class="bi bi-geo-alt"></i> Local do Estoque <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select"
+                                id="localEstoqueId"
+                                th:field="*{localEstoqueId}"
+                                required>
+                            <option value="" th:selected="${movimento.localEstoqueId == null}">Selecione um local</option>
+                            <option th:each="local : ${locais}"
+                                    th:value="${local.id}"
+                                    th:text="${local.descricao}"
+                                    th:selected="${movimento.localEstoqueId != null && movimento.localEstoqueId == local.id}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="tipoMovimentoId" class="form-label">
+                            <i class="bi bi-tag"></i> Tipo de Movimento <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select"
+                                id="tipoMovimentoId"
+                                th:field="*{tipoMovimentoId}"
+                                required>
+                            <option value="" th:selected="${movimento.tipoMovimentoId == null}">Selecione o tipo</option>
+                            <option th:each="tipo : ${tipos}"
+                                    th:value="${tipo.id}"
+                                    th:text="${tipo.descricao}"
+                                    th:selected="${movimento.tipoMovimentoId != null && movimento.tipoMovimentoId == tipo.id}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label for="quantidade" class="form-label">
+                            <i class="bi bi-calculator"></i> Quantidade <span class="text-danger">*</span>
+                        </label>
+                        <input type="number"
+                               class="form-control"
+                               id="quantidade"
+                               th:field="*{quantidade}"
+                               required
+                               step="0.01"
+                               min="0.01"
+                               placeholder="Ex: 10.50">
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label for="funcionarioId" class="form-label">
+                            <i class="bi bi-person"></i> Funcionário
+                        </label>
+                        <select class="form-select"
+                                id="funcionarioId"
+                                th:field="*{funcionarioId}">
+                            <option value="" th:selected="${movimento.funcionarioId == null}">Selecione (opcional)</option>
+                            <option th:each="funcionario : ${funcionarios}"
+                                    th:value="${funcionario.id}"
+                                    th:text="${'ID: ' + funcionario.id + ' - Pessoa: ' + funcionario.pessoaId}"
+                                    th:selected="${movimento.funcionarioId != null && movimento.funcionarioId == funcionario.id}">
+                            </option>
+                        </select>
+                        <small class="text-muted">Opcional</small>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="ordemServicoId" class="form-label">
+                            <i class="bi bi-clipboard-check"></i> Ordem de Serviço
+                        </label>
+                        <input type="number"
+                               class="form-control"
+                               id="ordemServicoId"
+                               th:field="*{ordemServicoId}"
+                               min="1"
+                               placeholder="Digite o ID da OS (opcional)">
+                        <small class="text-muted">Opcional - Vincular a uma OS existente</small>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="observacao" class="form-label">
+                            <i class="bi bi-chat-text"></i> Observação
+                        </label>
+                        <textarea class="form-control"
+                                  id="observacao"
+                                  th:field="*{observacao}"
+                                  rows="3"
+                                  maxlength="500"
+                                  placeholder="Observações sobre o movimento (opcional)"></textarea>
+                        <small class="text-muted">Opcional - Máximo 500 caracteres</small>
+                    </div>
+                </div>
+
+                <div class="alert alert-info mt-3">
+                    <i class="bi bi-info-circle"></i>
+                    <strong>Informação:</strong> A data e hora do movimento serão registradas automaticamente pelo sistema.
+                </div>
+
+                <div class="d-flex gap-2 justify-content-end mt-4">
+                    <a th:href="@{/movimento-estoque}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

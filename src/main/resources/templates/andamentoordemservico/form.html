@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Andamento de OS - SIGEJ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="bi bi-gear-fill"></i> SIGEJ
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}"><i class="bi bi-house"></i> Início</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/pessoas}"><i class="bi bi-people"></i> Pessoas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/andamentos-os}"><i class="bi bi-arrow-repeat"></i> Andamentos de OS</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Container -->
+<div class="container mt-4">
+    <div class="mb-4">
+        <h2>
+            <i class="bi bi-arrow-repeat"></i>
+            <span th:text="${andamento.id == 0} ? 'Novo Andamento' : 'Editar Andamento'"></span>
+        </h2>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form th:action="@{/andamentos-os/salvar}" th:object="${andamento}" method="post">
+
+                <input type="hidden" th:field="*{id}">
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="osId" class="form-label">
+                            <i class="bi bi-clipboard-check"></i> Ordem de Serviço <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select"
+                                id="osId"
+                                th:field="*{osId}"
+                                required>
+                            <option value="" th:selected="${andamento.osId == null}">Selecione uma OS</option>
+                            <option th:each="ordem : ${ordens}"
+                                    th:value="${ordem.id}"
+                                    th:text="${ordem.numeroSequencial + ' - ' + ordem.descricaoProblema}"
+                                    th:selected="${andamento.osId != null && andamento.osId == ordem.id}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="funcionarioId" class="form-label">
+                            <i class="bi bi-person"></i> Funcionário Responsável
+                        </label>
+                        <select class="form-select"
+                                id="funcionarioId"
+                                th:field="*{funcionarioId}">
+                            <option value="" th:selected="${andamento.funcionarioId == null}">Selecione (opcional)</option>
+                            <option th:each="func : ${funcionarios}"
+                                    th:value="${func.id}"
+                                    th:text="${'ID: ' + func.id + ' - Pessoa: ' + func.pessoaId}"
+                                    th:selected="${andamento.funcionarioId != null && andamento.funcionarioId == func.id}">
+                            </option>
+                        </select>
+                        <small class="text-muted">Opcional</small>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="statusAnteriorId" class="form-label">
+                            <i class="bi bi-arrow-left-circle"></i> Status Anterior
+                        </label>
+                        <select class="form-select"
+                                id="statusAnteriorId"
+                                th:field="*{statusAnteriorId}">
+                            <option value="" th:selected="${andamento.statusAnteriorId == null}">Selecione (opcional)</option>
+                            <option th:each="st : ${status}"
+                                    th:value="${st.id}"
+                                    th:text="${st.descricao}"
+                                    th:selected="${andamento.statusAnteriorId != null && andamento.statusAnteriorId == st.id}">
+                            </option>
+                        </select>
+                        <small class="text-muted">Status antes da mudança</small>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="statusNovoId" class="form-label">
+                            <i class="bi bi-arrow-right-circle"></i> Status Novo
+                        </label>
+                        <select class="form-select"
+                                id="statusNovoId"
+                                th:field="*{statusNovoId}">
+                            <option value="" th:selected="${andamento.statusNovoId == null}">Selecione (opcional)</option>
+                            <option th:each="st : ${status}"
+                                    th:value="${st.id}"
+                                    th:text="${st.descricao}"
+                                    th:selected="${andamento.statusNovoId != null && andamento.statusNovoId == st.id}">
+                            </option>
+                        </select>
+                        <small class="text-muted">Status depois da mudança</small>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="inicioAtendimento" class="form-label">
+                            <i class="bi bi-play-circle"></i> Início do Atendimento
+                        </label>
+                        <input type="datetime-local"
+                               class="form-control"
+                               id="inicioAtendimento"
+                               th:field="*{inicioAtendimento}">
+                        <small class="text-muted">Opcional - Quando iniciou o atendimento</small>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="fimAtendimento" class="form-label">
+                            <i class="bi bi-stop-circle"></i> Fim do Atendimento
+                        </label>
+                        <input type="datetime-local"
+                               class="form-control"
+                               id="fimAtendimento"
+                               th:field="*{fimAtendimento}">
+                        <small class="text-muted">Opcional - Quando finalizou o atendimento</small>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label for="descricao" class="form-label">
+                            <i class="bi bi-card-text"></i> Descrição do Andamento
+                        </label>
+                        <textarea class="form-control"
+                                  id="descricao"
+                                  th:field="*{descricao}"
+                                  rows="5"
+                                  maxlength="1000"
+                                  placeholder="Descreva o que foi feito, observações, problemas encontrados, etc."></textarea>
+                        <small class="text-muted">Opcional - Máximo 1000 caracteres</small>
+                    </div>
+                </div>
+
+                <div class="alert alert-info mt-3">
+                    <i class="bi bi-info-circle"></i>
+                    <strong>Informação:</strong> A data/hora do registro do andamento será gravada automaticamente pelo sistema.
+                </div>
+
+                <div class="d-flex gap-2 justify-content-end mt-4">
+                    <a th:href="@{/andamentos-os}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

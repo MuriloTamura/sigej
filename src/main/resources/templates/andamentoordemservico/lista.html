@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andamentos de OS - SIGEJ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="bi bi-gear-fill"></i> SIGEJ
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}"><i class="bi bi-house"></i> Início</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/pessoas}"><i class="bi bi-people"></i> Pessoas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/andamentos-os}"><i class="bi bi-arrow-repeat"></i> Andamentos de OS</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Container -->
+<div class="container mt-4">
+    <!-- Alertas -->
+    <div th:if="${sucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill"></i> <span th:text="${sucesso}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div th:if="${erro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i> <span th:text="${erro}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Cabeçalho -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-arrow-repeat"></i> Andamentos de Ordens de Serviço</h2>
+        <a th:href="@{/andamentos-os/novo}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Novo Andamento
+        </a>
+    </div>
+
+    <!-- Tabela -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>OS ID</th>
+                        <th>Data/Hora</th>
+                        <th>Status Anterior</th>
+                        <th>Status Novo</th>
+                        <th>Funcionário</th>
+                        <th>Duração</th>
+                        <th class="text-center">Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="andamento : ${andamentos}">
+                        <td th:text="${andamento.id}"></td>
+                        <td><strong th:text="${andamento.osId}"></strong></td>
+                        <td>
+                            <span th:if="${andamento.dataHora != null}"
+                                  th:text="${#temporals.format(andamento.dataHora, 'dd/MM/yyyy HH:mm')}"></span>
+                            <span th:unless="${andamento.dataHora != null}" class="text-muted">-</span>
+                        </td>
+                        <td>
+                            <span th:if="${andamento.statusAnteriorId != null}"
+                                  class="badge bg-secondary"
+                                  th:text="${andamento.statusAnteriorId}"></span>
+                            <span th:unless="${andamento.statusAnteriorId != null}" class="text-muted">-</span>
+                        </td>
+                        <td>
+                            <span th:if="${andamento.statusNovoId != null}"
+                                  class="badge bg-primary"
+                                  th:text="${andamento.statusNovoId}"></span>
+                            <span th:unless="${andamento.statusNovoId != null}" class="text-muted">-</span>
+                        </td>
+                        <td>
+                            <span th:if="${andamento.funcionarioId != null}"
+                                  th:text="${andamento.funcionarioId}"></span>
+                            <span th:unless="${andamento.funcionarioId != null}" class="text-muted">-</span>
+                        </td>
+                        <td>
+                            <span th:if="${andamento.inicioAtendimento != null && andamento.fimAtendimento != null}"
+                                  class="badge bg-success">
+                                <i class="bi bi-clock"></i> Concluído
+                            </span>
+                            <span th:if="${andamento.inicioAtendimento != null && andamento.fimAtendimento == null}"
+                                  class="badge bg-warning">
+                                <i class="bi bi-hourglass-split"></i> Em andamento
+                            </span>
+                            <span th:if="${andamento.inicioAtendimento == null}"
+                                  class="badge bg-secondary">
+                                <i class="bi bi-dash-circle"></i> Não iniciado
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                <a th:href="@{/andamentos-os/editar/{id}(id=${andamento.id})}"
+                                   class="btn btn-sm btn-warning"
+                                   title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a th:href="@{/andamentos-os/deletar/{id}(id=${andamento.id})}"
+                                   class="btn btn-sm btn-danger"
+                                   title="Excluir"
+                                   onclick="return confirm('Tem certeza que deseja excluir este andamento?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(andamentos)}">
+                        <td colspan="8" class="text-center text-muted py-4">
+                            <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                            <p class="mt-2">Nenhum andamento cadastrado.</p>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

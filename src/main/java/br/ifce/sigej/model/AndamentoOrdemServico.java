@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class AndamentoOrdemServico {
 
     private int id;
-    private int osId;
+    private Integer osId;                    // Integer para evitar problemas com Thymeleaf
     private LocalDateTime dataHora;
     private Integer statusAnteriorId;
     private Integer statusNovoId;
@@ -16,7 +16,7 @@ public class AndamentoOrdemServico {
 
     public AndamentoOrdemServico() {}
 
-    public AndamentoOrdemServico(int osId, Integer statusAnteriorId, Integer statusNovoId,
+    public AndamentoOrdemServico(Integer osId, Integer statusAnteriorId, Integer statusNovoId,
                                  Integer funcionarioId, String descricao,
                                  LocalDateTime inicioAtendimento, LocalDateTime fimAtendimento) {
 
@@ -29,7 +29,7 @@ public class AndamentoOrdemServico {
         this.fimAtendimento = fimAtendimento;
     }
 
-    public AndamentoOrdemServico(int id, int osId, LocalDateTime dataHora,
+    public AndamentoOrdemServico(int id, Integer osId, LocalDateTime dataHora,
                                  Integer statusAnteriorId, Integer statusNovoId,
                                  Integer funcionarioId, String descricao,
                                  LocalDateTime inicioAtendimento, LocalDateTime fimAtendimento) {
@@ -50,8 +50,8 @@ public class AndamentoOrdemServico {
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public int getOsId() { return osId; }
-    public void setOsId(int osId) { this.osId = osId; }
+    public Integer getOsId() { return osId; }
+    public void setOsId(Integer osId) { this.osId = osId; }
 
     public LocalDateTime getDataHora() { return dataHora; }
     public void setDataHora(LocalDateTime dataHora) { this.dataHora = dataHora; }

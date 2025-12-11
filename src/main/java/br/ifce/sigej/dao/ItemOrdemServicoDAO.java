@@ -2,11 +2,14 @@ package br.ifce.sigej.dao;
 
 import br.ifce.sigej.database.ConnectionFactory;
 import br.ifce.sigej.model.ItemOrdemServico;
+import org.springframework.stereotype.Component;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@Component
 public class ItemOrdemServicoDAO {
 
     public void inserir(ItemOrdemServico i) {
@@ -19,16 +22,15 @@ public class ItemOrdemServicoDAO {
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, i.getOsId());
-            stmt.setInt(2, i.getProdutoVariacaoId());
+            stmt.setObject(1, i.getOsId());
+            stmt.setObject(2, i.getProdutoVariacaoId());
             stmt.setDouble(3, i.getQuantidadePrevista());
             stmt.setDouble(4, i.getQuantidadeUsada());
 
             stmt.executeUpdate();
-            System.out.println("Item da OS inserido!");
 
         } catch (SQLException e) {
-            System.out.println("Erro ao inserir item_ordem_servico: " + e.getMessage());
+            throw new RuntimeException("Erro ao inserir item da OS: " + e.getMessage(), e);
         }
     }
 
@@ -37,68 +39,87 @@ public class ItemOrdemServicoDAO {
         String sql = "SELECT * FROM item_ordem_servico ORDER BY id";
 
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                ItemOrdemServico item = new ItemOrdemServico(
-                        rs.getInt("id"),
-                        rs.getInt("os_id"),
-                        rs.getInt("produto_variacao_id"),
-                        rs.getDouble("quantidade_prevista"),
-                        rs.getDouble("quantidade_usada")
-                );
-                lista.add(item);
+                lista.add(mapearItemOrdemServico(rs));
             }
 
         } catch (SQLException e) {
-            System.out.println("Erro ao listar item_ordem_servico: " + e.getMessage());
+            throw new RuntimeException("Erro ao listar itens da OS: " + e.getMessage(), e);
         }
 
         return lista;
     }
 
+    public Optional<ItemOrdemServico> buscarPorId(int id) {
+        String sql = "SELECT * FROM item_ordem_servico WHERE id = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return Optional.of(mapearItemOrdemServico(rs));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar item da OS: " + e.getMessage(), e);
+        }
+
+        return Optional.empty();
+    }
+
     public void atualizar(ItemOrdemServico i) {
         String sql = """
             UPDATE item_ordem_servico
-            SET os_id = ?, produto_variacao_id = ?, quantidade_prevista = ?, quantidade_usada = ?
-            WHERE id = ?
+            SET os_id=?, produto_variacao_id=?, quantidade_prevista=?, quantidade_usada=?
+            WHERE id=?
             """;
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, i.getOsId());
-            stmt.setInt(2, i.getProdutoVariacaoId());
+            stmt.setObject(1, i.getOsId());
+            stmt.setObject(2, i.getProdutoVariacaoId());
             stmt.setDouble(3, i.getQuantidadePrevista());
             stmt.setDouble(4, i.getQuantidadeUsada());
             stmt.setInt(5, i.getId());
 
             stmt.executeUpdate();
-            System.out.println("Item da OS atualizado!");
 
         } catch (SQLException e) {
-            System.out.println("Erro ao atualizar item_ordem_servico: " + e.getMessage());
+            throw new RuntimeException("Erro ao atualizar item da OS: " + e.getMessage(), e);
         }
     }
 
     public void deletar(int id) {
-        String sql = "DELETE FROM item_ordem_servico WHERE id = ?";
+        String sql = "DELETE FROM item_ordem_servico WHERE id=?";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             stmt.executeUpdate();
-            System.out.println("Item da OS removido!");
 
         } catch (SQLException e) {
-
-            if (e.getMessage().contains("foreign key")) {
-                System.out.println("Não é possível excluir: existem referências associadas.");
-            } else {
-                System.out.println("Erro ao deletar item_ordem_servico: " + e.getMessage());
+            if (e.getMessage().contains("violates foreign key constraint")) {
+                throw new RuntimeException("Não é possível excluir: este item está sendo referenciado em outras tabelas.");
             }
+            throw new RuntimeException("Erro ao deletar item da OS: " + e.getMessage(), e);
         }
+    }
+
+    private ItemOrdemServico mapearItemOrdemServico(ResultSet rs) throws SQLException {
+        ItemOrdemServico i = new ItemOrdemServico();
+        i.setId(rs.getInt("id"));
+        i.setOsId((Integer) rs.getObject("os_id"));
+        i.setProdutoVariacaoId((Integer) rs.getObject("produto_variacao_id"));
+        i.setQuantidadePrevista(rs.getDouble("quantidade_prevista"));
+        i.setQuantidadeUsada(rs.getDouble("quantidade_usada"));
+        return i;
     }
 }
