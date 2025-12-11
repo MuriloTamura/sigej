@@ -26,15 +26,6 @@
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/pessoas}"><i class="bi bi-people"></i> Pessoas</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/setores}"><i class="bi bi-building"></i> Setores</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/tipos-funcionario}"><i class="bi bi-tags"></i> Tipos de Funcionário</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/marcas}"><i class="bi bi-bookmark"></i> Marcas</a>
-                </li>
             </ul>
         </div>
     </div>
@@ -50,16 +41,22 @@
         </div>
     </div>
 
-    <div class="row g-4">
+    <!-- SEÇÃO: PESSOAS E SETORES -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <h4 class="text-primary"><i class="bi bi-people-fill"></i> Pessoas e Setores</h4>
+        </div>
+    </div>
+    <div class="row g-4 mb-5">
         <!-- Card Pessoas -->
-        <div class="col-md-6 col-lg-4">
+        <div class="col-md-6 col-lg-3">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
                     <h5 class="card-title">
                         <i class="bi bi-people text-primary"></i> Pessoas
                     </h5>
-                    <p class="card-text">Gerencie o cadastro de pessoas do sistema.</p>
-                    <a th:href="@{/pessoas}" class="btn btn-primary">
+                    <p class="card-text">Cadastro de pessoas do sistema.</p>
+                    <a th:href="@{/pessoas}" class="btn btn-primary btn-sm">
                         <i class="bi bi-arrow-right"></i> Acessar
                     </a>
                 </div>
@@ -67,14 +64,14 @@
         </div>
 
         <!-- Card Setores -->
-        <div class="col-md-6 col-lg-4">
+        <div class="col-md-6 col-lg-3">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
                     <h5 class="card-title">
                         <i class="bi bi-building text-info"></i> Setores
                     </h5>
                     <p class="card-text">Organize os setores da instituição.</p>
-                    <a th:href="@{/setores}" class="btn btn-info">
+                    <a th:href="@{/setores}" class="btn btn-info btn-sm">
                         <i class="bi bi-arrow-right"></i> Acessar
                     </a>
                 </div>
@@ -82,14 +79,14 @@
         </div>
 
         <!-- Card Tipos de Funcionário -->
-        <div class="col-md-6 col-lg-4">
+        <div class="col-md-6 col-lg-3">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
                     <h5 class="card-title">
                         <i class="bi bi-tags text-warning"></i> Tipos de Funcionário
                     </h5>
                     <p class="card-text">Classifique os tipos de funcionários.</p>
-                    <a th:href="@{/tipos-funcionario}" class="btn btn-warning">
+                    <a th:href="@{/tipos-funcionario}" class="btn btn-warning btn-sm">
                         <i class="bi bi-arrow-right"></i> Acessar
                     </a>
                 </div>
@@ -97,29 +94,52 @@
         </div>
 
         <!-- Card Funcionários -->
-        <div class="col-md-6 col-lg-4">
+        <div class="col-md-6 col-lg-3">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
                     <h5 class="card-title">
                         <i class="bi bi-person-badge text-success"></i> Funcionários
                     </h5>
                     <p class="card-text">Cadastro e gestão de funcionários.</p>
-                    <a th:href="@{/funcionarios}" class="btn btn-success">
+                    <a th:href="@{/funcionarios}" class="btn btn-success btn-sm">
                         <i class="bi bi-arrow-right"></i> Acessar
                     </a>
                 </div>
             </div>
         </div>
+    </div>
 
+    <!-- SEÇÃO: ESTOQUE E PRODUTOS -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <h4 class="text-success"><i class="bi bi-box-seam-fill"></i> Estoque e Produtos</h4>
+        </div>
+    </div>
+    <div class="row g-4 mb-5">
         <!-- Card Marcas -->
-        <div class="col-md-6 col-lg-4">
+        <div class="col-md-6 col-lg-3">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
                     <h5 class="card-title">
                         <i class="bi bi-bookmark text-danger"></i> Marcas
                     </h5>
                     <p class="card-text">Cadastro de marcas de produtos.</p>
-                    <a th:href="@{/marcas}" class="btn btn-danger">
+                    <a th:href="@{/marcas}" class="btn btn-danger btn-sm">
+                        <i class="bi bi-arrow-right"></i> Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Categorias -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-tags text-info"></i> Categorias
+                    </h5>
+                    <p class="card-text">Categorias de materiais.</p>
+                    <a th:href="@{/categorias}" class="btn btn-info btn-sm">
                         <i class="bi bi-arrow-right"></i> Acessar
                     </a>
                 </div>
@@ -127,75 +147,301 @@
         </div>
 
         <!-- Card Produtos -->
-        <div class="col-md-6 col-lg-4">
+        <div class="col-md-6 col-lg-3">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
                     <h5 class="card-title">
                         <i class="bi bi-box-seam text-primary"></i> Produtos
                     </h5>
                     <p class="card-text">Catálogo de produtos e materiais.</p>
-                    <a href="#" class="btn btn-primary disabled">
-                        <i class="bi bi-arrow-right"></i> Em breve
+                    <a th:href="@{/produtos}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-arrow-right"></i> Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Variações de Produtos -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-boxes text-info"></i> Variações
+                    </h5>
+                    <p class="card-text">Variações de produtos (cores/tamanhos).</p>
+                    <a th:href="@{/produto-variacoes}" class="btn btn-info btn-sm">
+                        <i class="bi bi-arrow-right"></i> Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Cores -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-palette text-danger"></i> Cores
+                    </h5>
+                    <p class="card-text">Cadastro de cores de produtos.</p>
+                    <a th:href="@{/cores}" class="btn btn-danger btn-sm">
+                        <i class="bi bi-arrow-right"></i> Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Tamanhos -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-rulers text-warning"></i> Tamanhos
+                    </h5>
+                    <p class="card-text">Cadastro de tamanhos de produtos.</p>
+                    <a th:href="@{/tamanhos}" class="btn btn-warning btn-sm">
+                        <i class="bi bi-arrow-right"></i> Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Unidades de Medida -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-speedometer text-success"></i> Unidades
+                    </h5>
+                    <p class="card-text">Unidades de medida.</p>
+                    <a th:href="@{/unidades-medida}" class="btn btn-success btn-sm">
+                        <i class="bi bi-arrow-right"></i> Acessar
                     </a>
                 </div>
             </div>
         </div>
 
         <!-- Card Estoque -->
-        <div class="col-md-6 col-lg-4">
+        <div class="col-md-6 col-lg-3">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <i class="bi bi-archive text-secondary"></i> Estoque
+                        <i class="bi bi-inbox text-primary"></i> Estoque
                     </h5>
-                    <p class="card-text">Controle de estoque e movimentações.</p>
-                    <a href="#" class="btn btn-secondary disabled">
-                        <i class="bi bi-arrow-right"></i> Em breve
+                    <p class="card-text">Consulta e gestão de estoque.</p>
+                    <a th:href="@{/estoques}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-arrow-right"></i> Acessar
                     </a>
                 </div>
             </div>
         </div>
 
-        <!-- Card Ordens de Serviço -->
-        <div class="col-md-6 col-lg-4">
+        <!-- Card Locais de Estoque -->
+        <div class="col-md-6 col-lg-3">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <i class="bi bi-clipboard-check text-danger"></i> Ordens de Serviço
+                        <i class="bi bi-geo-alt text-danger"></i> Locais Estoque
                     </h5>
-                    <p class="card-text">Gestão de ordens de serviço e manutenção.</p>
-                    <a href="#" class="btn btn-danger disabled">
-                        <i class="bi bi-arrow-right"></i> Em breve
+                    <p class="card-text">Locais de armazenamento.</p>
+                    <a th:href="@{/locais-estoque}" class="btn btn-danger btn-sm">
+                        <i class="bi bi-arrow-right"></i> Acessar
                     </a>
                 </div>
             </div>
         </div>
 
-        <!-- Card Equipes -->
-        <div class="col-md-6 col-lg-4">
+        <!-- Card Movimentos de Estoque -->
+        <div class="col-md-6 col-lg-3">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <i class="bi bi-people-fill text-dark"></i> Equipes
+                        <i class="bi bi-arrow-left-right text-warning"></i> Movimentos
                     </h5>
-                    <p class="card-text">Equipes de manutenção e membros.</p>
-                    <a href="#" class="btn btn-dark disabled">
-                        <i class="bi bi-arrow-right"></i> Em breve
+                    <p class="card-text">Controle de movimentações de estoque.</p>
+                    <a th:href="@{/movimento-estoque}" class="btn btn-warning btn-sm">
+                        <i class="bi bi-arrow-right"></i> Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Tipos de Movimento -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-list-ul text-info"></i> Tipos Movimento
+                    </h5>
+                    <p class="card-text">Tipos de movimentação de estoque.</p>
+                    <a th:href="@{/tipos-movimento-estoque}" class="btn btn-info btn-sm">
+                        <i class="bi bi-arrow-right"></i> Acessar
                     </a>
                 </div>
             </div>
         </div>
 
         <!-- Card Fornecedores -->
-        <div class="col-md-6 col-lg-4">
+        <div class="col-md-6 col-lg-3">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
                     <h5 class="card-title">
                         <i class="bi bi-truck text-success"></i> Fornecedores
                     </h5>
                     <p class="card-text">Cadastro de fornecedores.</p>
-                    <a href="#" class="btn btn-success disabled">
-                        <i class="bi bi-arrow-right"></i> Em breve
+                    <a th:href="@{/fornecedores}" class="btn btn-success btn-sm">
+                        <i class="bi bi-arrow-right"></i> Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEÇÃO: ORDENS DE SERVIÇO -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <h4 class="text-danger"><i class="bi bi-clipboard-check-fill"></i> Ordens de Serviço</h4>
+        </div>
+    </div>
+    <div class="row g-4 mb-5">
+        <!-- Card Ordens de Serviço -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-clipboard-check text-danger"></i> Ordens de Serviço
+                    </h5>
+                    <p class="card-text">Gestão de ordens de serviço.</p>
+                    <a th:href="@{/ordens-servico}" class="btn btn-danger btn-sm">
+                        <i class="bi bi-arrow-right"></i> Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Tipos de OS -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-collection text-primary"></i> Tipos de OS
+                    </h5>
+                    <p class="card-text">Tipos de ordem de serviço.</p>
+                    <a th:href="@{/tipos-ordem-servico}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-arrow-right"></i> Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Status de OS -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-flag text-warning"></i> Status de OS
+                    </h5>
+                    <p class="card-text">Status das ordens de serviço.</p>
+                    <a th:href="@{/status-ordem-servico}" class="btn btn-warning btn-sm">
+                        <i class="bi bi-arrow-right"></i> Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Itens de OS -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-list-check text-primary"></i> Itens de OS
+                    </h5>
+                    <p class="card-text">Materiais utilizados nas OSs.</p>
+                    <a th:href="@{/itens-ordem-servico}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-arrow-right"></i> Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Andamentos de OS -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-arrow-repeat text-info"></i> Andamentos
+                    </h5>
+                    <p class="card-text">Histórico de andamentos das OSs.</p>
+                    <a th:href="@{/andamentos-os}" class="btn btn-info btn-sm">
+                        <i class="bi bi-arrow-right"></i> Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Equipes de Manutenção (CORRIGIDO) -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-people-fill text-success"></i> Equipes
+                    </h5>
+                    <p class="card-text">Equipes de manutenção.</p>
+                    <a th:href="@{/equipes-manutencao}" class="btn btn-success btn-sm">
+                        <i class="bi bi-arrow-right"></i> Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Membros de Equipe -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-person-badge text-warning"></i> Membros
+                    </h5>
+                    <p class="card-text">Membros das equipes de manutenção.</p>
+                    <a th:href="@{/equipe-membros}" class="btn btn-warning btn-sm">
+                        <i class="bi bi-arrow-right"></i> Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEÇÃO: CAMPUS E ÁREAS -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <h4 class="text-info"><i class="bi bi-building-fill"></i> Campus e Áreas</h4>
+        </div>
+    </div>
+    <div class="row g-4 mb-5">
+        <!-- Card Áreas do Campus -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-building text-primary"></i> Áreas Campus
+                    </h5>
+                    <p class="card-text">Áreas e blocos do campus.</p>
+                    <a th:href="@{/areas-campus}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-arrow-right"></i> Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Tipos de Área do Campus -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-grid text-info"></i> Tipos de Área
+                    </h5>
+                    <p class="card-text">Tipos de área do campus.</p>
+                    <a th:href="@{/tipos-area-campus}" class="btn btn-info btn-sm">
+                        <i class="bi bi-arrow-right"></i> Acessar
                     </a>
                 </div>
             </div>
@@ -204,5 +450,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/script.js"></script>
 </body>
 </html>
