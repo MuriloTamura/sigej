@@ -5,14 +5,20 @@ import java.time.LocalDateTime;
 public class MovimentoEstoque {
 
     private int id;
-    private Integer produtoVariacaoId;  // Integer para evitar problemas com Thymeleaf
-    private Integer localEstoqueId;     // Integer para evitar problemas com Thymeleaf
-    private Integer tipoMovimentoId;    // Integer para evitar problemas com Thymeleaf
+    private Integer produtoVariacaoId;
+    private Integer localEstoqueId;
+    private Integer tipoMovimentoId;
     private double quantidade;
     private LocalDateTime dataHora;
     private Integer funcionarioId;
     private Integer ordemServicoId;
     private String observacao;
+
+    // Objetos relacionados para exibição
+    private ProdutoVariacao produtoVariacao;
+    private LocalEstoque localEstoque;
+    private TipoMovimentoEstoque tipoMovimento;
+    private Funcionario funcionario;
 
     public MovimentoEstoque() {}
 
@@ -71,4 +77,18 @@ public class MovimentoEstoque {
 
     public String getObservacao() { return observacao; }
     public void setObservacao(String observacao) { this.observacao = observacao; }
+
+    // Getters e Setters dos objetos relacionados
+
+    public ProdutoVariacao getProdutoVariacao() { return produtoVariacao; }
+    public void setProdutoVariacao(ProdutoVariacao produtoVariacao) { this.produtoVariacao = produtoVariacao; }
+
+    public LocalEstoque getLocalEstoque() { return localEstoque; }
+    public void setLocalEstoque(LocalEstoque localEstoque) { this.localEstoque = localEstoque; }
+
+    public TipoMovimentoEstoque getTipoMovimento() { return tipoMovimento; }
+    public void setTipoMovimento(TipoMovimentoEstoque tipoMovimento) { this.tipoMovimento = tipoMovimento; }
+
+    public Funcionario getFuncionario() { return funcionario; }
+    public void setFuncionario(Funcionario funcionario) { this.funcionario = funcionario; }
 }

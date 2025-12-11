@@ -71,7 +71,7 @@
                                 id="solicitanteId"
                                 th:field="*{solicitanteId}"
                                 required>
-                            <option value="" th:selected="${ordem.solicitanteId == null}">Selecione o solicitante</option>
+                            <option value="">Selecione o solicitante</option>
                             <option th:each="pessoa : ${pessoas}"
                                     th:value="${pessoa.id}"
                                     th:text="${pessoa.nome}"
@@ -88,11 +88,12 @@
                                 id="areaCampusId"
                                 th:field="*{areaCampusId}"
                                 required>
-                            <option value="" th:selected="${ordem.areaCampusId == null}">Selecione a área</option>
+                            <option value="">Selecione a área</option>
                             <option th:each="area : ${areas}"
                                     th:value="${area.id}"
-                                    th:text="${area.descricao + (area.bloco != null ? ' - Bloco ' + area.bloco : '')}"
                                     th:selected="${ordem.areaCampusId != null && ordem.areaCampusId == area.id}">
+                                <span th:text="${area.descricao}"></span>
+                                <span th:if="${area.bloco != null}" th:text="${' - Bloco ' + area.bloco}"></span>
                             </option>
                         </select>
                     </div>
@@ -107,7 +108,7 @@
                                 id="tipoOsId"
                                 th:field="*{tipoOsId}"
                                 required>
-                            <option value="" th:selected="${ordem.tipoOsId == null}">Selecione o tipo</option>
+                            <option value="">Selecione o tipo</option>
                             <option th:each="tipo : ${tipos}"
                                     th:value="${tipo.id}"
                                     th:text="${tipo.descricao}"
@@ -124,7 +125,7 @@
                                 id="equipeId"
                                 th:field="*{equipeId}"
                                 required>
-                            <option value="" th:selected="${ordem.equipeId == null}">Selecione a equipe</option>
+                            <option value="">Selecione a equipe</option>
                             <option th:each="equipe : ${equipes}"
                                     th:value="${equipe.id}"
                                     th:text="${equipe.nome}"
@@ -141,10 +142,10 @@
                                 id="liderId"
                                 th:field="*{liderId}"
                                 required>
-                            <option value="" th:selected="${ordem.liderId == null}">Selecione o líder</option>
+                            <option value="">Selecione o líder</option>
                             <option th:each="func : ${funcionarios}"
                                     th:value="${func.id}"
-                                    th:text="${'ID: ' + func.id + ' - Pessoa: ' + func.pessoaId}"
+                                    th:text="${func.pessoaNome != null ? func.pessoaNome : 'Funcionário ID: ' + func.id}"
                                     th:selected="${ordem.liderId != null && ordem.liderId == func.id}">
                             </option>
                         </select>
@@ -160,7 +161,7 @@
                                 id="statusId"
                                 th:field="*{statusId}"
                                 required>
-                            <option value="" th:selected="${ordem.statusId == null}">Selecione o status</option>
+                            <option value="">Selecione o status</option>
                             <option th:each="st : ${status}"
                                     th:value="${st.id}"
                                     th:text="${st.descricao}"
@@ -177,7 +178,7 @@
                                 id="prioridade"
                                 th:field="*{prioridade}"
                                 required>
-                            <option value="" th:selected="${ordem.prioridade == null}">Selecione a prioridade</option>
+                            <option value="">Selecione a prioridade</option>
                             <option th:value="1" th:selected="${ordem.prioridade != null && ordem.prioridade == 1}">Alta</option>
                             <option th:value="2" th:selected="${ordem.prioridade != null && ordem.prioridade == 2}">Média</option>
                             <option th:value="3" th:selected="${ordem.prioridade != null && ordem.prioridade == 3}">Baixa</option>

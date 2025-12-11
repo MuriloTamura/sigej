@@ -35,7 +35,7 @@
 </nav>
 
 <!-- Container -->
-<div class="container mt-4">
+<div class="container-fluid mt-4" style="max-width: 1600px;">
     <!-- Alertas -->
     <div th:if="${sucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
         <i class="bi bi-check-circle-fill"></i> <span th:text="${sucesso}"></span>
@@ -57,47 +57,117 @@
 
     <!-- Tabela -->
     <div class="card shadow-sm">
-        <div class="card-body">
+        <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-hover table-sm mb-0" style="min-width: 1400px;">
                     <thead class="table-light">
                     <tr>
-                        <th>Nº OS</th>
-                        <th>Solicitante</th>
-                        <th>Área</th>
-                        <th>Equipe</th>
-                        <th>Status</th>
-                        <th>Prioridade</th>
-                        <th>Data Abertura</th>
-                        <th>Data Prevista</th>
-                        <th class="text-center">Ações</th>
+                        <th style="width: 110px; white-space: nowrap;">Nº OS</th>
+                        <th style="width: 140px;">Solicitante</th>
+                        <th style="width: 150px;">Área</th>
+                        <th style="width: 130px;">Tipo OS</th>
+                        <th style="width: 130px;">Equipe</th>
+                        <th style="width: 130px;">Líder</th>
+                        <th style="width: 110px;">Status</th>
+                        <th style="width: 100px; text-align: center;">Prioridade</th>
+                        <th style="width: 250px;">Descrição</th>
+                        <th style="width: 130px; white-space: nowrap;">Data Prevista</th>
+                        <th class="text-center" style="width: 120px; white-space: nowrap;">Ações</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="ordem : ${ordens}">
+                        <!-- Nº OS -->
                         <td><strong th:text="${ordem.numeroSequencial}"></strong></td>
-                        <td th:text="${ordem.solicitanteId}"></td>
-                        <td th:text="${ordem.areaCampusId}"></td>
-                        <td th:text="${ordem.equipeId}"></td>
-                        <td th:text="${ordem.statusId}"></td>
+
+                        <!-- Solicitante -->
                         <td>
+                            <span th:if="${ordem.solicitante != null}"
+                                  th:text="${ordem.solicitante.nome}"></span>
+                            <span th:unless="${ordem.solicitante != null}" class="text-muted">
+                                ID: <span th:text="${ordem.solicitanteId}"></span>
+                            </span>
+                        </td>
+
+                        <!-- Área -->
+                        <td>
+                            <span th:if="${ordem.areaCampus != null}">
+                                <span th:text="${ordem.areaCampus.descricao}"></span>
+                                <small th:if="${ordem.areaCampus.bloco != null}"
+                                       class="text-muted d-block"
+                                       th:text="${'Bloco ' + ordem.areaCampus.bloco}"></small>
+                            </span>
+                            <span th:unless="${ordem.areaCampus != null}" class="text-muted">
+                                ID: <span th:text="${ordem.areaCampusId}"></span>
+                            </span>
+                        </td>
+
+                        <!-- Tipo OS -->
+                        <td>
+                            <span th:if="${ordem.tipoOs != null}"
+                                  class="badge bg-primary"
+                                  th:text="${ordem.tipoOs.descricao}"></span>
+                            <span th:unless="${ordem.tipoOs != null}" class="text-muted">
+                                ID: <span th:text="${ordem.tipoOsId}"></span>
+                            </span>
+                        </td>
+
+                        <!-- Equipe -->
+                        <td>
+                            <span th:if="${ordem.equipe != null}"
+                                  class="badge bg-secondary"
+                                  th:text="${ordem.equipe.nome}"></span>
+                            <span th:unless="${ordem.equipe != null}" class="text-muted">
+                                ID: <span th:text="${ordem.equipeId}"></span>
+                            </span>
+                        </td>
+
+                        <!-- Líder -->
+                        <td>
+                            <span th:if="${ordem.lider != null}"
+                                  class="badge bg-info"
+                                  th:text="${ordem.lider.pessoaNome}"></span>
+                            <span th:unless="${ordem.lider != null}" class="text-muted">-</span>
+                        </td>
+
+                        <!-- Status -->
+                        <td>
+                            <span th:if="${ordem.status != null}"
+                                  class="badge bg-success"
+                                  th:text="${ordem.status.descricao}"></span>
+                            <span th:unless="${ordem.status != null}" class="text-muted">
+                                ID: <span th:text="${ordem.statusId}"></span>
+                            </span>
+                        </td>
+
+                        <!-- Prioridade -->
+                        <td style="text-align: center;">
                             <span th:if="${ordem.prioridade == 1}" class="badge bg-danger">Alta</span>
-                            <span th:if="${ordem.prioridade == 2}" class="badge bg-warning">Média</span>
+                            <span th:if="${ordem.prioridade == 2}" class="badge bg-warning text-dark">Média</span>
                             <span th:if="${ordem.prioridade == 3}" class="badge bg-info">Baixa</span>
                             <span th:if="${ordem.prioridade != 1 && ordem.prioridade != 2 && ordem.prioridade != 3}"
                                   class="text-muted">-</span>
                         </td>
+
+                        <!-- Descrição -->
                         <td>
-                            <span th:if="${ordem.dataAbertura != null}"
-                                  th:text="${#temporals.format(ordem.dataAbertura, 'dd/MM/yyyy HH:mm')}"></span>
-                            <span th:unless="${ordem.dataAbertura != null}" class="text-muted">-</span>
+                            <span th:if="${ordem.descricaoProblema != null && !#strings.isEmpty(ordem.descricaoProblema)}"
+                                  th:title="${ordem.descricaoProblema}"
+                                  th:text="${#strings.length(ordem.descricaoProblema) > 50 ? #strings.substring(ordem.descricaoProblema, 0, 50) + '...' : ordem.descricaoProblema}"
+                                  style="cursor: help;"></span>
+                            <span th:unless="${ordem.descricaoProblema != null && !#strings.isEmpty(ordem.descricaoProblema)}"
+                                  class="text-muted">-</span>
                         </td>
-                        <td>
+
+                        <!-- Data Prevista -->
+                        <td style="white-space: nowrap;">
                             <span th:if="${ordem.dataPrevista != null}"
                                   th:text="${#temporals.format(ordem.dataPrevista, 'dd/MM/yyyy')}"></span>
                             <span th:unless="${ordem.dataPrevista != null}" class="text-muted">-</span>
                         </td>
-                        <td class="text-center">
+
+                        <!-- Ações -->
+                        <td class="text-center" style="white-space: nowrap;">
                             <div class="btn-group" role="group">
                                 <a th:href="@{/ordens-servico/editar/{id}(id=${ordem.id})}"
                                    class="btn btn-sm btn-warning"
@@ -114,7 +184,7 @@
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(ordens)}">
-                        <td colspan="9" class="text-center text-muted py-4">
+                        <td colspan="11" class="text-center text-muted py-4">
                             <i class="bi bi-inbox" style="font-size: 2rem;"></i>
                             <p class="mt-2">Nenhuma ordem de serviço cadastrada.</p>
                         </td>

@@ -1,7 +1,7 @@
 package br.ifce.sigej.dao;
 
 import br.ifce.sigej.database.ConnectionFactory;
-import br.ifce.sigej.model.OrdemServico;
+import br.ifce.sigej.model.*;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
@@ -45,14 +45,110 @@ public class OrdemServicoDAO {
 
     public List<OrdemServico> listar() {
         List<OrdemServico> lista = new ArrayList<>();
-        String sql = "SELECT * FROM ordem_servico ORDER BY id DESC";
+        String sql = """
+            SELECT 
+                os.id, os.numero_sequencial, os.solicitante_id, os.area_campus_id, 
+                os.tipo_os_id, os.equipe_id, os.lider_id, os.status_id, os.prioridade,
+                os.data_abertura, os.data_prevista, os.descricao_problema,
+                
+                p.nome as solicitante_nome,
+                
+                ac.descricao as area_desc, ac.bloco as area_bloco,
+                
+                tos.descricao as tipo_desc,
+                
+                em.nome as equipe_nome,
+                
+                plider.nome as lider_nome,
+                
+                sos.descricao as status_desc
+                
+            FROM ordem_servico os
+            LEFT JOIN pessoa p ON os.solicitante_id = p.id
+            LEFT JOIN area_campus ac ON os.area_campus_id = ac.id
+            LEFT JOIN tipo_ordem_servico tos ON os.tipo_os_id = tos.id
+            LEFT JOIN equipe_manutencao em ON os.equipe_id = em.id
+            LEFT JOIN funcionario f ON os.lider_id = f.id
+            LEFT JOIN pessoa plider ON f.pessoa_id = plider.id
+            LEFT JOIN status_ordem_servico sos ON os.status_id = sos.id
+            
+            ORDER BY os.id DESC
+            """;
 
         try (Connection conn = ConnectionFactory.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                lista.add(mapearOrdemServico(rs));
+                OrdemServico o = new OrdemServico();
+                o.setId(rs.getInt("id"));
+                o.setNumeroSequencial(rs.getString("numero_sequencial"));
+                o.setSolicitanteId((Integer) rs.getObject("solicitante_id"));
+                o.setAreaCampusId((Integer) rs.getObject("area_campus_id"));
+                o.setTipoOsId((Integer) rs.getObject("tipo_os_id"));
+                o.setEquipeId((Integer) rs.getObject("equipe_id"));
+                o.setLiderId((Integer) rs.getObject("lider_id"));
+                o.setStatusId((Integer) rs.getObject("status_id"));
+                o.setPrioridade((Integer) rs.getObject("prioridade"));
+
+                Timestamp timestamp = rs.getTimestamp("data_abertura");
+                o.setDataAbertura(timestamp != null ? timestamp.toLocalDateTime() : null);
+
+                Date dataPrevista = rs.getDate("data_prevista");
+                o.setDataPrevista(dataPrevista != null ? dataPrevista.toLocalDate() : null);
+
+                o.setDescricaoProblema(rs.getString("descricao_problema"));
+
+                // Mapear Solicitante
+                String solicitanteNome = rs.getString("solicitante_nome");
+                if (solicitanteNome != null) {
+                    Pessoa solicitante = new Pessoa();
+                    solicitante.setNome(solicitanteNome);
+                    o.setSolicitante(solicitante);
+                }
+
+                // Mapear Área Campus
+                String areaDesc = rs.getString("area_desc");
+                if (areaDesc != null) {
+                    AreaCampus area = new AreaCampus();
+                    area.setDescricao(areaDesc);
+                    area.setBloco(rs.getString("area_bloco"));
+                    o.setAreaCampus(area);
+                }
+
+                // Mapear Tipo OS
+                String tipoDesc = rs.getString("tipo_desc");
+                if (tipoDesc != null) {
+                    TipoOrdemServico tipo = new TipoOrdemServico();
+                    tipo.setDescricao(tipoDesc);
+                    o.setTipoOs(tipo);
+                }
+
+                // Mapear Equipe
+                String equipeNome = rs.getString("equipe_nome");
+                if (equipeNome != null) {
+                    EquipeManutencao equipe = new EquipeManutencao();
+                    equipe.setNome(equipeNome);
+                    o.setEquipe(equipe);
+                }
+
+                // Mapear Líder
+                String liderNome = rs.getString("lider_nome");
+                if (liderNome != null) {
+                    Funcionario lider = new Funcionario();
+                    lider.setPessoaNome(liderNome);
+                    o.setLider(lider);
+                }
+
+                // Mapear Status
+                String statusDesc = rs.getString("status_desc");
+                if (statusDesc != null) {
+                    StatusOrdemServico status = new StatusOrdemServico();
+                    status.setDescricao(statusDesc);
+                    o.setStatus(status);
+                }
+
+                lista.add(o);
             }
 
         } catch (SQLException e) {
@@ -63,7 +159,30 @@ public class OrdemServicoDAO {
     }
 
     public Optional<OrdemServico> buscarPorId(int id) {
-        String sql = "SELECT * FROM ordem_servico WHERE id = ?";
+        String sql = """
+            SELECT 
+                os.id, os.numero_sequencial, os.solicitante_id, os.area_campus_id, 
+                os.tipo_os_id, os.equipe_id, os.lider_id, os.status_id, os.prioridade,
+                os.data_abertura, os.data_prevista, os.descricao_problema,
+                
+                p.nome as solicitante_nome,
+                ac.descricao as area_desc, ac.bloco as area_bloco,
+                tos.descricao as tipo_desc,
+                em.nome as equipe_nome,
+                plider.nome as lider_nome,
+                sos.descricao as status_desc
+                
+            FROM ordem_servico os
+            LEFT JOIN pessoa p ON os.solicitante_id = p.id
+            LEFT JOIN area_campus ac ON os.area_campus_id = ac.id
+            LEFT JOIN tipo_ordem_servico tos ON os.tipo_os_id = tos.id
+            LEFT JOIN equipe_manutencao em ON os.equipe_id = em.id
+            LEFT JOIN funcionario f ON os.lider_id = f.id
+            LEFT JOIN pessoa plider ON f.pessoa_id = plider.id
+            LEFT JOIN status_ordem_servico sos ON os.status_id = sos.id
+            
+            WHERE os.id = ?
+            """;
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -72,7 +191,70 @@ public class OrdemServicoDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return Optional.of(mapearOrdemServico(rs));
+                OrdemServico o = new OrdemServico();
+                o.setId(rs.getInt("id"));
+                o.setNumeroSequencial(rs.getString("numero_sequencial"));
+                o.setSolicitanteId((Integer) rs.getObject("solicitante_id"));
+                o.setAreaCampusId((Integer) rs.getObject("area_campus_id"));
+                o.setTipoOsId((Integer) rs.getObject("tipo_os_id"));
+                o.setEquipeId((Integer) rs.getObject("equipe_id"));
+                o.setLiderId((Integer) rs.getObject("lider_id"));
+                o.setStatusId((Integer) rs.getObject("status_id"));
+                o.setPrioridade((Integer) rs.getObject("prioridade"));
+
+                Timestamp timestamp = rs.getTimestamp("data_abertura");
+                o.setDataAbertura(timestamp != null ? timestamp.toLocalDateTime() : null);
+
+                Date dataPrevista = rs.getDate("data_prevista");
+                o.setDataPrevista(dataPrevista != null ? dataPrevista.toLocalDate() : null);
+
+                o.setDescricaoProblema(rs.getString("descricao_problema"));
+
+                // Mapear objetos relacionados (mesmo código do listar)
+                String solicitanteNome = rs.getString("solicitante_nome");
+                if (solicitanteNome != null) {
+                    Pessoa solicitante = new Pessoa();
+                    solicitante.setNome(solicitanteNome);
+                    o.setSolicitante(solicitante);
+                }
+
+                String areaDesc = rs.getString("area_desc");
+                if (areaDesc != null) {
+                    AreaCampus area = new AreaCampus();
+                    area.setDescricao(areaDesc);
+                    area.setBloco(rs.getString("area_bloco"));
+                    o.setAreaCampus(area);
+                }
+
+                String tipoDesc = rs.getString("tipo_desc");
+                if (tipoDesc != null) {
+                    TipoOrdemServico tipo = new TipoOrdemServico();
+                    tipo.setDescricao(tipoDesc);
+                    o.setTipoOs(tipo);
+                }
+
+                String equipeNome = rs.getString("equipe_nome");
+                if (equipeNome != null) {
+                    EquipeManutencao equipe = new EquipeManutencao();
+                    equipe.setNome(equipeNome);
+                    o.setEquipe(equipe);
+                }
+
+                String liderNome = rs.getString("lider_nome");
+                if (liderNome != null) {
+                    Funcionario lider = new Funcionario();
+                    lider.setPessoaNome(liderNome);
+                    o.setLider(lider);
+                }
+
+                String statusDesc = rs.getString("status_desc");
+                if (statusDesc != null) {
+                    StatusOrdemServico status = new StatusOrdemServico();
+                    status.setDescricao(statusDesc);
+                    o.setStatus(status);
+                }
+
+                return Optional.of(o);
             }
 
         } catch (SQLException e) {
@@ -128,27 +310,5 @@ public class OrdemServicoDAO {
             }
             throw new RuntimeException("Erro ao deletar ordem de serviço: " + e.getMessage(), e);
         }
-    }
-
-    private OrdemServico mapearOrdemServico(ResultSet rs) throws SQLException {
-        OrdemServico o = new OrdemServico();
-        o.setId(rs.getInt("id"));
-        o.setNumeroSequencial(rs.getString("numero_sequencial"));
-        o.setSolicitanteId((Integer) rs.getObject("solicitante_id"));
-        o.setAreaCampusId((Integer) rs.getObject("area_campus_id"));
-        o.setTipoOsId((Integer) rs.getObject("tipo_os_id"));
-        o.setEquipeId((Integer) rs.getObject("equipe_id"));
-        o.setLiderId((Integer) rs.getObject("lider_id"));
-        o.setStatusId((Integer) rs.getObject("status_id"));
-        o.setPrioridade((Integer) rs.getObject("prioridade"));
-
-        Timestamp timestamp = rs.getTimestamp("data_abertura");
-        o.setDataAbertura(timestamp != null ? timestamp.toLocalDateTime() : null);
-
-        Date dataPrevista = rs.getDate("data_prevista");
-        o.setDataPrevista(dataPrevista != null ? dataPrevista.toLocalDate() : null);
-
-        o.setDescricaoProblema(rs.getString("descricao_problema"));
-        return o;
     }
 }

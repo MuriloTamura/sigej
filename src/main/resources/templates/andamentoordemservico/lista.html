@@ -35,7 +35,7 @@
 </nav>
 
 <!-- Container -->
-<div class="container mt-4">
+<div class="container-fluid mt-4 px-4">
     <!-- Alertas -->
     <div th:if="${sucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
         <i class="bi bi-check-circle-fill"></i> <span th:text="${sucesso}"></span>
@@ -62,54 +62,67 @@
                 <table class="table table-hover">
                     <thead class="table-light">
                     <tr>
-                        <th>ID</th>
-                        <th>OS ID</th>
-                        <th>Data/Hora</th>
-                        <th>Status Anterior</th>
-                        <th>Status Novo</th>
-                        <th>Funcionário</th>
-                        <th>Duração</th>
-                        <th class="text-center">Ações</th>
+                        <th style="width: 4%;">ID</th>
+                        <th style="width: 8%;">OS</th>
+                        <th style="width: 11%;">Data/Hora</th>
+                        <th style="width: 11%;">Status Anterior</th>
+                        <th style="width: 11%;">Status Novo</th>
+                        <th style="width: 12%;">Funcionário</th>
+                        <th style="width: 28%;">Descrição</th>
+                        <th style="width: 8%;">Duração</th>
+                        <th class="text-center" style="width: 7%;">Ações</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="andamento : ${andamentos}">
                         <td th:text="${andamento.id}"></td>
-                        <td><strong th:text="${andamento.osId}"></strong></td>
                         <td>
-                            <span th:if="${andamento.dataHora != null}"
-                                  th:text="${#temporals.format(andamento.dataHora, 'dd/MM/yyyy HH:mm')}"></span>
+                            <span class="badge bg-primary" th:if="${andamento.osNumeroSequencial != null}" th:text="${andamento.osNumeroSequencial}"></span>
+                            <span class="text-muted" th:unless="${andamento.osNumeroSequencial != null}">-</span>
+                        </td>
+                        <td>
+                            <small th:if="${andamento.dataHora != null}" th:text="${#temporals.format(andamento.dataHora, 'dd/MM/yyyy HH:mm')}"></small>
                             <span th:unless="${andamento.dataHora != null}" class="text-muted">-</span>
                         </td>
                         <td>
-                            <span th:if="${andamento.statusAnteriorId != null}"
+                            <span th:if="${andamento.statusAnteriorDescricao != null}"
                                   class="badge bg-secondary"
-                                  th:text="${andamento.statusAnteriorId}"></span>
-                            <span th:unless="${andamento.statusAnteriorId != null}" class="text-muted">-</span>
+                                  th:text="${andamento.statusAnteriorDescricao}"></span>
+                            <span th:unless="${andamento.statusAnteriorDescricao != null}" class="text-muted">-</span>
                         </td>
                         <td>
-                            <span th:if="${andamento.statusNovoId != null}"
-                                  class="badge bg-primary"
-                                  th:text="${andamento.statusNovoId}"></span>
-                            <span th:unless="${andamento.statusNovoId != null}" class="text-muted">-</span>
+                            <span th:if="${andamento.statusNovoDescricao != null}"
+                                  class="badge bg-info"
+                                  th:text="${andamento.statusNovoDescricao}"></span>
+                            <span th:unless="${andamento.statusNovoDescricao != null}" class="text-muted">-</span>
                         </td>
                         <td>
-                            <span th:if="${andamento.funcionarioId != null}"
-                                  th:text="${andamento.funcionarioId}"></span>
-                            <span th:unless="${andamento.funcionarioId != null}" class="text-muted">-</span>
+                            <small th:if="${andamento.funcionarioNome != null}">
+                                <i class="bi bi-person-circle text-muted"></i>
+                                <span th:text="${andamento.funcionarioNome}"></span>
+                            </small>
+                            <span th:unless="${andamento.funcionarioNome != null}" class="text-muted">-</span>
+                        </td>
+                        <td>
+                            <small th:if="${andamento.descricao != null and !andamento.descricao.isEmpty()}"
+                                   class="text-muted"
+                                   th:text="${#strings.length(andamento.descricao) > 80 ? #strings.substring(andamento.descricao, 0, 80) + '...' : andamento.descricao}">
+                            </small>
+                            <span th:unless="${andamento.descricao != null and !andamento.descricao.isEmpty()}"
+                                  class="text-muted fst-italic">Sem descrição</span>
                         </td>
                         <td>
                             <span th:if="${andamento.inicioAtendimento != null && andamento.fimAtendimento != null}"
                                   class="badge bg-success">
-                                <i class="bi bi-clock"></i> Concluído
+                                <i class="bi bi-check-circle"></i> Concluído
                             </span>
                             <span th:if="${andamento.inicioAtendimento != null && andamento.fimAtendimento == null}"
                                   class="badge bg-warning">
-                                <i class="bi bi-hourglass-split"></i> Em andamento
+                                <i class="bi bi-hourglass-split"></i> Em curso
                             </span>
                             <span th:if="${andamento.inicioAtendimento == null}"
                                   class="badge bg-secondary">
-                                <i class="bi bi-dash-circle"></i> Não iniciado
+                                <i class="bi bi-dash-circle"></i> Pendente
                             </span>
                         </td>
                         <td class="text-center">
@@ -129,7 +142,7 @@
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(andamentos)}">
-                        <td colspan="8" class="text-center text-muted py-4">
+                        <td colspan="9" class="text-center text-muted py-4">
                             <i class="bi bi-inbox" style="font-size: 2rem;"></i>
                             <p class="mt-2">Nenhum andamento cadastrado.</p>
                         </td>
@@ -139,8 +152,49 @@
             </div>
         </div>
     </div>
+
+    <!-- Card informativo -->
+    <div class="card mt-4 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-info-circle text-primary"></i> Sobre Andamentos de OS</h5>
+            <p class="card-text text-muted">
+                Os andamentos registram todas as atualizações e mudanças de status das ordens de serviço,
+                incluindo o histórico completo desde a abertura até a conclusão.
+            </p>
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-clock-history text-info me-2" style="font-size: 1.5rem;"></i>
+                        <div>
+                            <strong>Histórico Completo</strong>
+                            <p class="text-muted small mb-0">Rastreabilidade total</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-arrow-left-right text-warning me-2" style="font-size: 1.5rem;"></i>
+                        <div>
+                            <strong>Mudanças de Status</strong>
+                            <p class="text-muted small mb-0">Acompanhe a evolução</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-person-check text-success me-2" style="font-size: 1.5rem;"></i>
+                        <div>
+                            <strong>Responsável</strong>
+                            <p class="text-muted small mb-0">Quem fez o atendimento</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/script.js"></script>
 </body>
 </html>

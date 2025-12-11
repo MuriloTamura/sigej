@@ -35,7 +35,7 @@
 </nav>
 
 <!-- Container -->
-<div class="container mt-4">
+<div class="container-fluid mt-4" style="max-width: 1400px;">
     <!-- Alertas -->
     <div th:if="${sucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
         <i class="bi bi-check-circle-fill"></i> <span th:text="${sucesso}"></span>
@@ -57,45 +57,95 @@
 
     <!-- Tabela -->
     <div class="card shadow-sm">
-        <div class="card-body">
+        <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-hover table-sm mb-0" style="min-width: 1200px;">
                     <thead class="table-light">
                     <tr>
-                        <th>ID</th>
-                        <th>Variação ID</th>
-                        <th>Local ID</th>
-                        <th>Tipo Mov. ID</th>
-                        <th>Quantidade</th>
-                        <th>Data/Hora</th>
-                        <th>Func. ID</th>
-                        <th>OS ID</th>
-                        <th class="text-center">Ações</th>
+                        <th style="width: 60px; white-space: nowrap;">ID</th>
+                        <th style="width: 220px;">Produto</th>
+                        <th style="width: 150px;">Local</th>
+                        <th style="width: 150px;">Tipo Movimento</th>
+                        <th style="width: 100px; text-align: right;">Quantidade</th>
+                        <th style="width: 140px; white-space: nowrap;">Data/Hora</th>
+                        <th style="width: 150px;">Funcionário</th>
+                        <th style="width: 80px; text-align: center;">OS</th>
+                        <th class="text-center" style="width: 120px; white-space: nowrap;">Ações</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="movimento : ${movimentos}">
                         <td th:text="${movimento.id}"></td>
-                        <td th:text="${movimento.produtoVariacaoId}"></td>
-                        <td th:text="${movimento.localEstoqueId}"></td>
-                        <td th:text="${movimento.tipoMovimentoId}"></td>
+
+                        <!-- Produto Variação -->
                         <td>
+                            <span th:if="${movimento.produtoVariacao != null}">
+                                <strong th:text="${movimento.produtoVariacao.produtoDescricao}"></strong>
+                                <small class="text-muted d-block">
+                                    <span th:if="${movimento.produtoVariacao.corNome != null}"
+                                          th:text="${movimento.produtoVariacao.corNome}"></span>
+                                    <span th:if="${movimento.produtoVariacao.tamanhoDescricao != null}">
+                                        / <span th:text="${movimento.produtoVariacao.tamanhoDescricao}"></span>
+                                    </span>
+                                </small>
+                            </span>
+                            <span th:unless="${movimento.produtoVariacao != null}" class="text-muted">
+                                ID: <span th:text="${movimento.produtoVariacaoId}"></span>
+                            </span>
+                        </td>
+
+                        <!-- Local Estoque -->
+                        <td>
+                            <span th:if="${movimento.localEstoque != null}"
+                                  class="badge bg-secondary"
+                                  th:text="${movimento.localEstoque.descricao}"></span>
+                            <span th:unless="${movimento.localEstoque != null}" class="text-muted">
+                                ID: <span th:text="${movimento.localEstoqueId}"></span>
+                            </span>
+                        </td>
+
+                        <!-- Tipo Movimento -->
+                        <td>
+                            <span th:if="${movimento.tipoMovimento != null}">
+                                <span th:classappend="${movimento.tipoMovimento.sinal == '+' ? 'badge bg-success' : 'badge bg-danger'}"
+                                      th:text="${movimento.tipoMovimento.sinal + ' ' + movimento.tipoMovimento.descricao}"></span>
+                            </span>
+                            <span th:unless="${movimento.tipoMovimento != null}" class="text-muted">
+                                ID: <span th:text="${movimento.tipoMovimentoId}"></span>
+                            </span>
+                        </td>
+
+                        <!-- Quantidade -->
+                        <td style="text-align: right;">
                             <strong th:text="${#numbers.formatDecimal(movimento.quantidade, 1, 2)}"></strong>
                         </td>
-                        <td>
+
+                        <!-- Data/Hora -->
+                        <td style="white-space: nowrap;">
                             <span th:if="${movimento.dataHora != null}"
                                   th:text="${#temporals.format(movimento.dataHora, 'dd/MM/yyyy HH:mm')}"></span>
                             <span th:unless="${movimento.dataHora != null}" class="text-muted">-</span>
                         </td>
+
+                        <!-- Funcionário -->
                         <td>
-                            <span th:if="${movimento.funcionarioId != null}" th:text="${movimento.funcionarioId}"></span>
-                            <span th:unless="${movimento.funcionarioId != null}" class="text-muted">-</span>
+                            <span th:if="${movimento.funcionario != null}" class="badge bg-info">
+                                <i class="bi bi-person-fill"></i>
+                                <span th:text="${movimento.funcionario.pessoaNome}"></span>
+                            </span>
+                            <span th:unless="${movimento.funcionario != null}" class="text-muted">-</span>
                         </td>
-                        <td>
-                            <span th:if="${movimento.ordemServicoId != null}" th:text="${movimento.ordemServicoId}"></span>
+
+                        <!-- Ordem de Serviço -->
+                        <td style="text-align: center;">
+                            <span th:if="${movimento.ordemServicoId != null}"
+                                  class="badge bg-warning text-dark"
+                                  th:text="${'#' + movimento.ordemServicoId}"></span>
                             <span th:unless="${movimento.ordemServicoId != null}" class="text-muted">-</span>
                         </td>
-                        <td class="text-center">
+
+                        <!-- Ações -->
+                        <td class="text-center" style="white-space: nowrap;">
                             <div class="btn-group" role="group">
                                 <a th:href="@{/movimento-estoque/editar/{id}(id=${movimento.id})}"
                                    class="btn btn-sm btn-warning"

@@ -7,16 +7,24 @@ public class OrdemServico {
 
     private int id;
     private String numeroSequencial;
-    private Integer solicitanteId;     // Integer para evitar problemas com Thymeleaf
-    private Integer areaCampusId;      // Integer para evitar problemas com Thymeleaf
-    private Integer tipoOsId;          // Integer para evitar problemas com Thymeleaf
-    private Integer equipeId;          // Integer para evitar problemas com Thymeleaf
-    private Integer liderId;           // Integer para evitar problemas com Thymeleaf
-    private Integer statusId;          // Integer para evitar problemas com Thymeleaf
-    private Integer prioridade;        // Integer para evitar problemas com Thymeleaf
+    private Integer solicitanteId;
+    private Integer areaCampusId;
+    private Integer tipoOsId;
+    private Integer equipeId;
+    private Integer liderId;
+    private Integer statusId;
+    private Integer prioridade;
     private LocalDateTime dataAbertura;
     private LocalDate dataPrevista;
     private String descricaoProblema;
+
+    // Objetos relacionados para exibição
+    private Pessoa solicitante;
+    private AreaCampus areaCampus;
+    private TipoOrdemServico tipoOs;
+    private EquipeManutencao equipe;
+    private Funcionario lider;
+    private StatusOrdemServico status;
 
     public OrdemServico() {}
 
@@ -92,4 +100,24 @@ public class OrdemServico {
 
     public String getDescricaoProblema() { return descricaoProblema; }
     public void setDescricaoProblema(String descricaoProblema) { this.descricaoProblema = descricaoProblema; }
+
+    // Getters e Setters dos objetos relacionados
+
+    public Pessoa getSolicitante() { return solicitante; }
+    public void setSolicitante(Pessoa solicitante) { this.solicitante = solicitante; }
+
+    public AreaCampus getAreaCampus() { return areaCampus; }
+    public void setAreaCampus(AreaCampus areaCampus) { this.areaCampus = areaCampus; }
+
+    public TipoOrdemServico getTipoOs() { return tipoOs; }
+    public void setTipoOs(TipoOrdemServico tipoOs) { this.tipoOs = tipoOs; }
+
+    public EquipeManutencao getEquipe() { return equipe; }
+    public void setEquipe(EquipeManutencao equipe) { this.equipe = equipe; }
+
+    public Funcionario getLider() { return lider; }
+    public void setLider(Funcionario lider) { this.lider = lider; }
+
+    public StatusOrdemServico getStatus() { return status; }
+    public void setStatus(StatusOrdemServico status) { this.status = status; }
 }

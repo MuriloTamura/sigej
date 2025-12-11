@@ -150,4 +150,77 @@ public class ProdutoVariacaoDAO {
         v.setCodigoInterno(rs.getString("codigo_interno"));
         return v;
     }
+
+    public List<ProdutoVariacao> listarComDetalhes() {
+        List<ProdutoVariacao> lista = new ArrayList<>();
+        String sql = """
+        SELECT 
+            pv.id, 
+            pv.produto_id, 
+            pv.cor_id, 
+            pv.tamanho_id,
+            pv.codigo_barras,
+            pv.codigo_interno,
+            p.descricao as produto_desc, 
+            c.nome as cor_nome, 
+            t.descricao as tamanho_desc
+        FROM produto_variacao pv
+        LEFT JOIN produto p ON pv.produto_id = p.id
+        LEFT JOIN cor c ON pv.cor_id = c.id
+        LEFT JOIN tamanho t ON pv.tamanho_id = t.id
+        ORDER BY p.descricao, c.nome, t.descricao
+        """;
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                ProdutoVariacao pv = new ProdutoVariacao();
+                pv.setId(rs.getInt("id"));
+                pv.setProdutoId((Integer) rs.getObject("produto_id"));
+                pv.setCorId((Integer) rs.getObject("cor_id"));
+                pv.setTamanhoId((Integer) rs.getObject("tamanho_id"));
+                pv.setCodigoBarras(rs.getString("codigo_barras"));
+                pv.setCodigoInterno(rs.getString("codigo_interno"));
+
+                // Campos extras para exibição
+                pv.setProdutoDescricao(rs.getString("produto_desc"));
+                pv.setCorNome(rs.getString("cor_nome"));
+                pv.setTamanhoDescricao(rs.getString("tamanho_desc"));
+
+                lista.add(pv);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao listar variações de produtos: " + e.getMessage(), e);
+        }
+
+        return lista;
+    }
+
+    // Método auxiliar para gerar descrição formatada para o select
+    public String getDescricaoCompleta(ProdutoVariacao pv) {
+        StringBuilder desc = new StringBuilder();
+
+        if (pv.getProdutoDescricao() != null) {
+            desc.append(pv.getProdutoDescricao());
+        }
+
+        if (pv.getCorNome() != null || pv.getTamanhoDescricao() != null) {
+            desc.append(" (");
+            if (pv.getCorNome() != null) {
+                desc.append(pv.getCorNome());
+            }
+            if (pv.getTamanhoDescricao() != null) {
+                if (pv.getCorNome() != null) {
+                    desc.append(" / ");
+                }
+                desc.append(pv.getTamanhoDescricao());
+            }
+            desc.append(")");
+        }
+
+        return desc.toString();
+    }
 }

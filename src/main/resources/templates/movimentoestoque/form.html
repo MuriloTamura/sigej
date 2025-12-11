@@ -58,11 +58,14 @@
                                 id="produtoVariacaoId"
                                 th:field="*{produtoVariacaoId}"
                                 required>
-                            <option value="" th:selected="${movimento.produtoVariacaoId == null}">Selecione uma variação</option>
+                            <option value="">Selecione uma variação</option>
                             <option th:each="variacao : ${variacoes}"
                                     th:value="${variacao.id}"
-                                    th:text="${'ID: ' + variacao.id + ' - Produto: ' + variacao.produtoId}"
                                     th:selected="${movimento.produtoVariacaoId != null && movimento.produtoVariacaoId == variacao.id}">
+                                <span th:text="${variacao.produtoDescricao != null ? variacao.produtoDescricao : 'Produto ' + variacao.produtoId}"></span>
+                                <span th:if="${variacao.corNome != null || variacao.tamanhoDescricao != null}">
+                                    (<span th:text="${variacao.corNome}"></span><span th:if="${variacao.corNome != null && variacao.tamanhoDescricao != null}"> / </span><span th:text="${variacao.tamanhoDescricao}"></span>)
+                                </span>
                             </option>
                         </select>
                     </div>
@@ -75,7 +78,7 @@
                                 id="localEstoqueId"
                                 th:field="*{localEstoqueId}"
                                 required>
-                            <option value="" th:selected="${movimento.localEstoqueId == null}">Selecione um local</option>
+                            <option value="">Selecione um local</option>
                             <option th:each="local : ${locais}"
                                     th:value="${local.id}"
                                     th:text="${local.descricao}"
@@ -94,11 +97,12 @@
                                 id="tipoMovimentoId"
                                 th:field="*{tipoMovimentoId}"
                                 required>
-                            <option value="" th:selected="${movimento.tipoMovimentoId == null}">Selecione o tipo</option>
+                            <option value="">Selecione o tipo</option>
                             <option th:each="tipo : ${tipos}"
                                     th:value="${tipo.id}"
-                                    th:text="${tipo.descricao}"
                                     th:selected="${movimento.tipoMovimentoId != null && movimento.tipoMovimentoId == tipo.id}">
+                                <span th:text="${tipo.sinal != null ? tipo.sinal + ' ' : ''}"></span>
+                                <span th:text="${tipo.descricao}"></span>
                             </option>
                         </select>
                     </div>
@@ -124,10 +128,10 @@
                         <select class="form-select"
                                 id="funcionarioId"
                                 th:field="*{funcionarioId}">
-                            <option value="" th:selected="${movimento.funcionarioId == null}">Selecione (opcional)</option>
+                            <option value="">Selecione (opcional)</option>
                             <option th:each="funcionario : ${funcionarios}"
                                     th:value="${funcionario.id}"
-                                    th:text="${'ID: ' + funcionario.id + ' - Pessoa: ' + funcionario.pessoaId}"
+                                    th:text="${funcionario.pessoaNome != null ? funcionario.pessoaNome : 'Funcionário ID: ' + funcionario.id}"
                                     th:selected="${movimento.funcionarioId != null && movimento.funcionarioId == funcionario.id}">
                             </option>
                         </select>

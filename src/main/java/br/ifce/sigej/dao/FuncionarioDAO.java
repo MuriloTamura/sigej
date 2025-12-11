@@ -144,4 +144,61 @@ public class FuncionarioDAO {
         f.setSetorNome(rs.getString("setor_nome"));
         return f;
     }
+
+    public List<Funcionario> listarComNomes() {
+        List<Funcionario> lista = new ArrayList<>();
+        String sql = """
+        SELECT 
+            f.id, 
+            f.pessoa_id, 
+            f.tipo_funcionario_id, 
+            f.setor_id,
+            f.data_admissao,
+            f.data_demissao,
+            p.nome as pessoa_nome,
+            tf.descricao as tipo_descricao,
+            s.nome as setor_nome
+        FROM funcionario f
+        LEFT JOIN pessoa p ON f.pessoa_id = p.id
+        LEFT JOIN tipo_funcionario tf ON f.tipo_funcionario_id = tf.id
+        LEFT JOIN setor s ON f.setor_id = s.id
+        WHERE f.data_demissao IS NULL
+        ORDER BY p.nome
+        """;
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Funcionario f = new Funcionario();
+                f.setId(rs.getInt("id"));
+                f.setPessoaId((Integer) rs.getObject("pessoa_id"));
+                f.setTipoFuncionarioId((Integer) rs.getObject("tipo_funcionario_id"));
+                f.setSetorId((Integer) rs.getObject("setor_id"));
+
+                Date dataAdmissao = rs.getDate("data_admissao");
+                if (dataAdmissao != null) {
+                    f.setDataAdmissao(dataAdmissao.toLocalDate());
+                }
+
+                Date dataDemissao = rs.getDate("data_demissao");
+                if (dataDemissao != null) {
+                    f.setDataDemissao(dataDemissao.toLocalDate());
+                }
+
+                // Campos extras
+                f.setPessoaNome(rs.getString("pessoa_nome"));
+                f.setTipoFuncionarioDescricao(rs.getString("tipo_descricao"));
+                f.setSetorNome(rs.getString("setor_nome"));
+
+                lista.add(f);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao listar funcionários: " + e.getMessage(), e);
+        }
+
+        return lista;
+    }
 }

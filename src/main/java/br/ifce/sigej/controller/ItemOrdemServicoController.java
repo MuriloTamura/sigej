@@ -32,8 +32,7 @@ public class ItemOrdemServicoController {
     @GetMapping("/novo")
     public String novo(Model model) {
         model.addAttribute("item", new ItemOrdemServico());
-        model.addAttribute("ordens", ordemServicoDAO.listar());
-        model.addAttribute("variacoes", produtoVariacaoDAO.listar());
+        carregarDadosFormulario(model);
         return "itemordemservico/form";
     }
 
@@ -42,8 +41,7 @@ public class ItemOrdemServicoController {
         return itemOrdemServicoDAO.buscarPorId(id)
                 .map(item -> {
                     model.addAttribute("item", item);
-                    model.addAttribute("ordens", ordemServicoDAO.listar());
-                    model.addAttribute("variacoes", produtoVariacaoDAO.listar());
+                    carregarDadosFormulario(model);
                     return "itemordemservico/form";
                 })
                 .orElseGet(() -> {
@@ -78,5 +76,11 @@ public class ItemOrdemServicoController {
             redirectAttributes.addFlashAttribute("erro", e.getMessage());
         }
         return "redirect:/itens-ordem-servico";
+    }
+
+    // Método auxiliar para carregar dados do formulário
+    private void carregarDadosFormulario(Model model) {
+        model.addAttribute("ordens", ordemServicoDAO.listar());  // Já traz com JOIN
+        model.addAttribute("variacoes", produtoVariacaoDAO.listarComDetalhes());  // Usa método com JOIN
     }
 }

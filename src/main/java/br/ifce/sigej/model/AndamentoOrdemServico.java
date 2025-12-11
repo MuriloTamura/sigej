@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class AndamentoOrdemServico {
 
     private int id;
-    private Integer osId;                    // Integer para evitar problemas com Thymeleaf
+    private Integer osId;
     private LocalDateTime dataHora;
     private Integer statusAnteriorId;
     private Integer statusNovoId;
@@ -13,6 +13,12 @@ public class AndamentoOrdemServico {
     private String descricao;
     private LocalDateTime inicioAtendimento;
     private LocalDateTime fimAtendimento;
+
+    // Atributos adicionais para exibição (não persistidos)
+    private String osNumeroSequencial;
+    private String statusAnteriorDescricao;
+    private String statusNovoDescricao;
+    private String funcionarioNome;
 
     public AndamentoOrdemServico() {}
 
@@ -73,4 +79,18 @@ public class AndamentoOrdemServico {
 
     public LocalDateTime getFimAtendimento() { return fimAtendimento; }
     public void setFimAtendimento(LocalDateTime fimAtendimento) { this.fimAtendimento = fimAtendimento; }
+
+    // Getters e Setters dos atributos de exibição
+
+    public String getOsNumeroSequencial() { return osNumeroSequencial; }
+    public void setOsNumeroSequencial(String osNumeroSequencial) { this.osNumeroSequencial = osNumeroSequencial; }
+
+    public String getStatusAnteriorDescricao() { return statusAnteriorDescricao; }
+    public void setStatusAnteriorDescricao(String statusAnteriorDescricao) { this.statusAnteriorDescricao = statusAnteriorDescricao; }
+
+    public String getStatusNovoDescricao() { return statusNovoDescricao; }
+    public void setStatusNovoDescricao(String statusNovoDescricao) { this.statusNovoDescricao = statusNovoDescricao; }
+
+    public String getFuncionarioNome() { return funcionarioNome; }
+    public void setFuncionarioNome(String funcionarioNome) { this.funcionarioNome = funcionarioNome; }
 }

@@ -3,10 +3,14 @@ package br.ifce.sigej.model;
 public class ItemOrdemServico {
 
     private int id;
-    private Integer osId;                    // Integer para evitar problemas com Thymeleaf
-    private Integer produtoVariacaoId;       // Integer para evitar problemas com Thymeleaf
+    private Integer osId;
+    private Integer produtoVariacaoId;
     private double quantidadePrevista;
     private double quantidadeUsada;
+
+    // Objetos relacionados para exibição
+    private OrdemServico ordemServico;
+    private ProdutoVariacao produtoVariacao;
 
     public ItemOrdemServico() {}
 
@@ -41,4 +45,12 @@ public class ItemOrdemServico {
 
     public double getQuantidadeUsada() { return quantidadeUsada; }
     public void setQuantidadeUsada(double quantidadeUsada) { this.quantidadeUsada = quantidadeUsada; }
+
+    // Getters e Setters dos objetos relacionados
+
+    public OrdemServico getOrdemServico() { return ordemServico; }
+    public void setOrdemServico(OrdemServico ordemServico) { this.ordemServico = ordemServico; }
+
+    public ProdutoVariacao getProdutoVariacao() { return produtoVariacao; }
+    public void setProdutoVariacao(ProdutoVariacao produtoVariacao) { this.produtoVariacao = produtoVariacao; }
 }

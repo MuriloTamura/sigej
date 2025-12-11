@@ -42,12 +42,7 @@ public class OrdemServicoController {
     @GetMapping("/novo")
     public String novo(Model model) {
         model.addAttribute("ordem", new OrdemServico());
-        model.addAttribute("pessoas", pessoaDAO.listar());
-        model.addAttribute("funcionarios", funcionarioDAO.listar());
-        model.addAttribute("areas", areaCampusDAO.listar());
-        model.addAttribute("tipos", tipoOrdemServicoDAO.listar());
-        model.addAttribute("equipes", equipeManutencaoDAO.listar());
-        model.addAttribute("status", statusOrdemServicoDAO.listar());
+        carregarDadosFormulario(model);
         return "ordemservico/form";
     }
 
@@ -56,12 +51,7 @@ public class OrdemServicoController {
         return ordemServicoDAO.buscarPorId(id)
                 .map(ordem -> {
                     model.addAttribute("ordem", ordem);
-                    model.addAttribute("pessoas", pessoaDAO.listar());
-                    model.addAttribute("funcionarios", funcionarioDAO.listar());
-                    model.addAttribute("areas", areaCampusDAO.listar());
-                    model.addAttribute("tipos", tipoOrdemServicoDAO.listar());
-                    model.addAttribute("equipes", equipeManutencaoDAO.listar());
-                    model.addAttribute("status", statusOrdemServicoDAO.listar());
+                    carregarDadosFormulario(model);
                     return "ordemservico/form";
                 })
                 .orElseGet(() -> {
@@ -71,45 +61,19 @@ public class OrdemServicoController {
     }
 
     @PostMapping("/salvar")
-    public String salvar(@ModelAttribute OrdemServico ordem, RedirectAttributes redirectAttributes, Model model) {
+    public String salvar(@ModelAttribute OrdemServico ordem, RedirectAttributes redirectAttributes) {
         try {
-            System.out.println("=== INICIANDO SALVAMENTO ===");
-            System.out.println("ID: " + ordem.getId());
-            System.out.println("Número: " + ordem.getNumeroSequencial());
-            System.out.println("Solicitante ID: " + ordem.getSolicitanteId());
-            System.out.println("Área ID: " + ordem.getAreaCampusId());
-            System.out.println("Tipo OS ID: " + ordem.getTipoOsId());
-            System.out.println("Equipe ID: " + ordem.getEquipeId());
-            System.out.println("Líder ID: " + ordem.getLiderId());
-            System.out.println("Status ID: " + ordem.getStatusId());
-            System.out.println("Prioridade: " + ordem.getPrioridade());
-            System.out.println("Data Prevista: " + ordem.getDataPrevista());
-            System.out.println("Descrição: " + ordem.getDescricaoProblema());
-
             if (ordem.getId() == 0) {
-                System.out.println("Inserindo nova ordem...");
                 ordemServicoDAO.inserir(ordem);
-                System.out.println("Ordem inserida com sucesso!");
                 redirectAttributes.addFlashAttribute("sucesso", "Ordem de serviço cadastrada com sucesso!");
             } else {
-                System.out.println("Atualizando ordem existente...");
                 ordemServicoDAO.atualizar(ordem);
-                System.out.println("Ordem atualizada com sucesso!");
                 redirectAttributes.addFlashAttribute("sucesso", "Ordem de serviço atualizada com sucesso!");
             }
             return "redirect:/ordens-servico";
         } catch (Exception e) {
-            System.out.println("=== ERRO AO SALVAR ===");
-            e.printStackTrace();
-            model.addAttribute("erro", "Erro ao salvar: " + e.getMessage());
-            model.addAttribute("ordem", ordem);
-            model.addAttribute("pessoas", pessoaDAO.listar());
-            model.addAttribute("funcionarios", funcionarioDAO.listar());
-            model.addAttribute("areas", areaCampusDAO.listar());
-            model.addAttribute("tipos", tipoOrdemServicoDAO.listar());
-            model.addAttribute("equipes", equipeManutencaoDAO.listar());
-            model.addAttribute("status", statusOrdemServicoDAO.listar());
-            return "ordemservico/form";
+            redirectAttributes.addFlashAttribute("erro", "Erro ao salvar: " + e.getMessage());
+            return "redirect:/ordens-servico/novo";
         }
     }
 
@@ -122,5 +86,15 @@ public class OrdemServicoController {
             redirectAttributes.addFlashAttribute("erro", e.getMessage());
         }
         return "redirect:/ordens-servico";
+    }
+
+    // Método auxiliar para carregar dados do formulário
+    private void carregarDadosFormulario(Model model) {
+        model.addAttribute("pessoas", pessoaDAO.listar());
+        model.addAttribute("funcionarios", funcionarioDAO.listarComNomes());  // Usa método com JOIN
+        model.addAttribute("areas", areaCampusDAO.listar());
+        model.addAttribute("tipos", tipoOrdemServicoDAO.listar());
+        model.addAttribute("equipes", equipeManutencaoDAO.listar());
+        model.addAttribute("status", statusOrdemServicoDAO.listar());
     }
 }

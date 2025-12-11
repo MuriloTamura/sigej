@@ -58,11 +58,13 @@
                                 id="osId"
                                 th:field="*{osId}"
                                 required>
-                            <option value="" th:selected="${item.osId == null}">Selecione uma OS</option>
+                            <option value="">Selecione uma OS</option>
                             <option th:each="ordem : ${ordens}"
                                     th:value="${ordem.id}"
-                                    th:text="${ordem.numeroSequencial + ' - ' + ordem.descricaoProblema}"
                                     th:selected="${item.osId != null && item.osId == ordem.id}">
+                                <span th:text="${ordem.numeroSequencial}"></span>
+                                <span th:if="${ordem.descricaoProblema != null && !#strings.isEmpty(ordem.descricaoProblema)}"
+                                      th:text="${' - ' + (#strings.length(ordem.descricaoProblema) > 50 ? #strings.substring(ordem.descricaoProblema, 0, 50) + '...' : ordem.descricaoProblema)}"></span>
                             </option>
                         </select>
                     </div>
@@ -75,11 +77,14 @@
                                 id="produtoVariacaoId"
                                 th:field="*{produtoVariacaoId}"
                                 required>
-                            <option value="" th:selected="${item.produtoVariacaoId == null}">Selecione um produto</option>
+                            <option value="">Selecione um produto</option>
                             <option th:each="variacao : ${variacoes}"
                                     th:value="${variacao.id}"
-                                    th:text="${'ID: ' + variacao.id + ' - Produto: ' + variacao.produtoId}"
                                     th:selected="${item.produtoVariacaoId != null && item.produtoVariacaoId == variacao.id}">
+                                <span th:text="${variacao.produtoDescricao != null ? variacao.produtoDescricao : 'Produto ' + variacao.produtoId}"></span>
+                                <span th:if="${variacao.corNome != null || variacao.tamanhoDescricao != null}">
+                                    (<span th:text="${variacao.corNome}"></span><span th:if="${variacao.corNome != null && variacao.tamanhoDescricao != null}"> / </span><span th:text="${variacao.tamanhoDescricao}"></span>)
+                                </span>
                             </option>
                         </select>
                     </div>
@@ -95,9 +100,9 @@
                                id="quantidadePrevista"
                                th:field="*{quantidadePrevista}"
                                required
-                               step="0.001"
+                               step="0.01"
                                min="0"
-                               placeholder="Ex: 10.500">
+                               placeholder="Ex: 10.50">
                         <small class="text-muted">Quantidade estimada/planejada</small>
                     </div>
 
@@ -110,9 +115,9 @@
                                id="quantidadeUsada"
                                th:field="*{quantidadeUsada}"
                                required
-                               step="0.001"
+                               step="0.01"
                                min="0"
-                               placeholder="Ex: 8.750">
+                               placeholder="Ex: 8.75">
                         <small class="text-muted">Quantidade efetivamente utilizada</small>
                     </div>
                 </div>

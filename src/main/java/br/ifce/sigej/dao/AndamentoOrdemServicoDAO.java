@@ -41,14 +41,60 @@ public class AndamentoOrdemServicoDAO {
 
     public List<AndamentoOrdemServico> listar() {
         List<AndamentoOrdemServico> lista = new ArrayList<>();
-        String sql = "SELECT * FROM andamento_ordem_servico ORDER BY id DESC";
+        String sql = """
+            SELECT 
+                a.id,
+                a.os_id,
+                a.data_hora,
+                a.status_anterior_id,
+                a.status_novo_id,
+                a.funcionario_id,
+                a.descricao,
+                a.inicio_atendimento,
+                a.fim_atendimento,
+                os.numero_sequencial as os_numero,
+                sa.descricao as status_anterior_desc,
+                sn.descricao as status_novo_desc,
+                p.nome as funcionario_nome
+            FROM andamento_ordem_servico a
+            LEFT JOIN ordem_servico os ON a.os_id = os.id
+            LEFT JOIN status_ordem_servico sa ON a.status_anterior_id = sa.id
+            LEFT JOIN status_ordem_servico sn ON a.status_novo_id = sn.id
+            LEFT JOIN funcionario f ON a.funcionario_id = f.id
+            LEFT JOIN pessoa p ON f.pessoa_id = p.id
+            ORDER BY a.id DESC
+            """;
 
         try (Connection conn = ConnectionFactory.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                lista.add(mapearAndamentoOrdemServico(rs));
+                AndamentoOrdemServico a = new AndamentoOrdemServico();
+                a.setId(rs.getInt("id"));
+                a.setOsId((Integer) rs.getObject("os_id"));
+
+                Timestamp dataHora = rs.getTimestamp("data_hora");
+                a.setDataHora(dataHora != null ? dataHora.toLocalDateTime() : null);
+
+                a.setStatusAnteriorId((Integer) rs.getObject("status_anterior_id"));
+                a.setStatusNovoId((Integer) rs.getObject("status_novo_id"));
+                a.setFuncionarioId((Integer) rs.getObject("funcionario_id"));
+                a.setDescricao(rs.getString("descricao"));
+
+                Timestamp inicioAtendimento = rs.getTimestamp("inicio_atendimento");
+                a.setInicioAtendimento(inicioAtendimento != null ? inicioAtendimento.toLocalDateTime() : null);
+
+                Timestamp fimAtendimento = rs.getTimestamp("fim_atendimento");
+                a.setFimAtendimento(fimAtendimento != null ? fimAtendimento.toLocalDateTime() : null);
+
+                // Atributos adicionais para exibição
+                a.setOsNumeroSequencial(rs.getString("os_numero"));
+                a.setStatusAnteriorDescricao(rs.getString("status_anterior_desc"));
+                a.setStatusNovoDescricao(rs.getString("status_novo_desc"));
+                a.setFuncionarioNome(rs.getString("funcionario_nome"));
+
+                lista.add(a);
             }
 
         } catch (SQLException e) {

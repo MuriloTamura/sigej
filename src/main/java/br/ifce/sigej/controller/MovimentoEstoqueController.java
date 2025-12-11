@@ -40,10 +40,7 @@ public class MovimentoEstoqueController {
     @GetMapping("/novo")
     public String novo(Model model) {
         model.addAttribute("movimento", new MovimentoEstoque());
-        model.addAttribute("variacoes", produtoVariacaoDAO.listar());
-        model.addAttribute("locais", localEstoqueDAO.listar());
-        model.addAttribute("tipos", tipoMovimentoEstoqueDAO.listar());
-        model.addAttribute("funcionarios", funcionarioDAO.listar());
+        carregarDadosFormulario(model);
         return "movimentoestoque/form";
     }
 
@@ -52,10 +49,7 @@ public class MovimentoEstoqueController {
         return movimentoEstoqueDAO.buscarPorId(id)
                 .map(movimento -> {
                     model.addAttribute("movimento", movimento);
-                    model.addAttribute("variacoes", produtoVariacaoDAO.listar());
-                    model.addAttribute("locais", localEstoqueDAO.listar());
-                    model.addAttribute("tipos", tipoMovimentoEstoqueDAO.listar());
-                    model.addAttribute("funcionarios", funcionarioDAO.listar());
+                    carregarDadosFormulario(model);
                     return "movimentoestoque/form";
                 })
                 .orElseGet(() -> {
@@ -90,5 +84,20 @@ public class MovimentoEstoqueController {
             redirectAttributes.addFlashAttribute("erro", e.getMessage());
         }
         return "redirect:/movimento-estoque";
+    }
+
+    // Método auxiliar para carregar dados do formulário com nomes
+    private void carregarDadosFormulario(Model model) {
+        // Usa listarComDetalhes() para trazer produto/cor/tamanho
+        model.addAttribute("variacoes", produtoVariacaoDAO.listarComDetalhes());
+
+        // Locais já tem descrição
+        model.addAttribute("locais", localEstoqueDAO.listar());
+
+        // Tipos já tem descrição
+        model.addAttribute("tipos", tipoMovimentoEstoqueDAO.listar());
+
+        // Usa listarComNomes() para trazer nome da pessoa
+        model.addAttribute("funcionarios", funcionarioDAO.listarComNomes());
     }
 }

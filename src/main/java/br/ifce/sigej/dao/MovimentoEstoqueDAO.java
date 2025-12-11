@@ -1,7 +1,7 @@
 package br.ifce.sigej.dao;
 
 import br.ifce.sigej.database.ConnectionFactory;
-import br.ifce.sigej.model.MovimentoEstoque;
+import br.ifce.sigej.model.*;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
@@ -40,14 +40,91 @@ public class MovimentoEstoqueDAO {
 
     public List<MovimentoEstoque> listar() {
         List<MovimentoEstoque> lista = new ArrayList<>();
-        String sql = "SELECT * FROM movimento_estoque ORDER BY id DESC";
+        String sql = """
+            SELECT 
+                me.id, me.produto_variacao_id, me.local_estoque_id, me.tipo_movimento_id,
+                me.quantidade, me.data_hora, me.funcionario_id, me.ordem_servico_id, me.observacao,
+                
+                pv.id as pv_id, prod.descricao as produto_desc, c.nome as cor_nome, t.descricao as tamanho_desc,
+                
+                le.id as le_id, le.descricao as local_desc,
+                
+                tm.id as tm_id, tm.descricao as tipo_desc, tm.sinal as tipo_sinal,
+                
+                f.id as func_id, p.nome as pessoa_nome
+                
+            FROM movimento_estoque me
+            LEFT JOIN produto_variacao pv ON me.produto_variacao_id = pv.id
+            LEFT JOIN produto prod ON pv.produto_id = prod.id
+            LEFT JOIN cor c ON pv.cor_id = c.id
+            LEFT JOIN tamanho t ON pv.tamanho_id = t.id
+            
+            LEFT JOIN local_estoque le ON me.local_estoque_id = le.id
+            
+            LEFT JOIN tipo_movimento_estoque tm ON me.tipo_movimento_id = tm.id
+            
+            LEFT JOIN funcionario f ON me.funcionario_id = f.id
+            LEFT JOIN pessoa p ON f.pessoa_id = p.id
+            
+            ORDER BY me.id DESC
+            """;
 
         try (Connection conn = ConnectionFactory.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                lista.add(mapearMovimentoEstoque(rs));
+                MovimentoEstoque m = new MovimentoEstoque();
+                m.setId(rs.getInt("id"));
+                m.setProdutoVariacaoId((Integer) rs.getObject("produto_variacao_id"));
+                m.setLocalEstoqueId((Integer) rs.getObject("local_estoque_id"));
+                m.setTipoMovimentoId((Integer) rs.getObject("tipo_movimento_id"));
+                m.setQuantidade(rs.getDouble("quantidade"));
+
+                Timestamp timestamp = rs.getTimestamp("data_hora");
+                m.setDataHora(timestamp != null ? timestamp.toLocalDateTime() : null);
+
+                m.setFuncionarioId((Integer) rs.getObject("funcionario_id"));
+                m.setOrdemServicoId((Integer) rs.getObject("ordem_servico_id"));
+                m.setObservacao(rs.getString("observacao"));
+
+                // Mapear ProdutoVariacao
+                if (rs.getObject("pv_id") != null) {
+                    ProdutoVariacao pv = new ProdutoVariacao();
+                    pv.setId(rs.getInt("pv_id"));
+                    pv.setProdutoDescricao(rs.getString("produto_desc"));
+                    pv.setCorNome(rs.getString("cor_nome"));
+                    pv.setTamanhoDescricao(rs.getString("tamanho_desc"));
+                    m.setProdutoVariacao(pv);
+                }
+
+                // Mapear LocalEstoque
+                if (rs.getObject("le_id") != null) {
+                    LocalEstoque le = new LocalEstoque();
+                    le.setId(rs.getInt("le_id"));
+                    le.setDescricao(rs.getString("local_desc"));
+                    m.setLocalEstoque(le);
+                }
+
+                // Mapear TipoMovimentoEstoque
+                if (rs.getObject("tm_id") != null) {
+                    TipoMovimentoEstoque tm = new TipoMovimentoEstoque();
+                    tm.setId(rs.getInt("tm_id"));
+                    tm.setDescricao(rs.getString("tipo_desc"));
+                    String sinalStr = rs.getString("tipo_sinal");
+                    tm.setSinal(sinalStr != null && !sinalStr.isEmpty() ? sinalStr.charAt(0) : null);
+                    m.setTipoMovimento(tm);
+                }
+
+                // Mapear Funcionario
+                if (rs.getObject("func_id") != null) {
+                    Funcionario f = new Funcionario();
+                    f.setId(rs.getInt("func_id"));
+                    f.setPessoaNome(rs.getString("pessoa_nome"));
+                    m.setFuncionario(f);
+                }
+
+                lista.add(m);
             }
 
         } catch (SQLException e) {
@@ -58,7 +135,34 @@ public class MovimentoEstoqueDAO {
     }
 
     public Optional<MovimentoEstoque> buscarPorId(int id) {
-        String sql = "SELECT * FROM movimento_estoque WHERE id = ?";
+        String sql = """
+            SELECT 
+                me.id, me.produto_variacao_id, me.local_estoque_id, me.tipo_movimento_id,
+                me.quantidade, me.data_hora, me.funcionario_id, me.ordem_servico_id, me.observacao,
+                
+                pv.id as pv_id, prod.descricao as produto_desc, c.nome as cor_nome, t.descricao as tamanho_desc,
+                
+                le.id as le_id, le.descricao as local_desc,
+                
+                tm.id as tm_id, tm.descricao as tipo_desc, tm.sinal as tipo_sinal,
+                
+                f.id as func_id, p.nome as pessoa_nome
+                
+            FROM movimento_estoque me
+            LEFT JOIN produto_variacao pv ON me.produto_variacao_id = pv.id
+            LEFT JOIN produto prod ON pv.produto_id = prod.id
+            LEFT JOIN cor c ON pv.cor_id = c.id
+            LEFT JOIN tamanho t ON pv.tamanho_id = t.id
+            
+            LEFT JOIN local_estoque le ON me.local_estoque_id = le.id
+            
+            LEFT JOIN tipo_movimento_estoque tm ON me.tipo_movimento_id = tm.id
+            
+            LEFT JOIN funcionario f ON me.funcionario_id = f.id
+            LEFT JOIN pessoa p ON f.pessoa_id = p.id
+            
+            WHERE me.id = ?
+            """;
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -67,7 +171,54 @@ public class MovimentoEstoqueDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return Optional.of(mapearMovimentoEstoque(rs));
+                MovimentoEstoque m = new MovimentoEstoque();
+                m.setId(rs.getInt("id"));
+                m.setProdutoVariacaoId((Integer) rs.getObject("produto_variacao_id"));
+                m.setLocalEstoqueId((Integer) rs.getObject("local_estoque_id"));
+                m.setTipoMovimentoId((Integer) rs.getObject("tipo_movimento_id"));
+                m.setQuantidade(rs.getDouble("quantidade"));
+
+                Timestamp timestamp = rs.getTimestamp("data_hora");
+                m.setDataHora(timestamp != null ? timestamp.toLocalDateTime() : null);
+
+                m.setFuncionarioId((Integer) rs.getObject("funcionario_id"));
+                m.setOrdemServicoId((Integer) rs.getObject("ordem_servico_id"));
+                m.setObservacao(rs.getString("observacao"));
+
+                // Mapear objetos relacionados (mesmo código do listar)
+                if (rs.getObject("pv_id") != null) {
+                    ProdutoVariacao pv = new ProdutoVariacao();
+                    pv.setId(rs.getInt("pv_id"));
+                    pv.setProdutoDescricao(rs.getString("produto_desc"));
+                    pv.setCorNome(rs.getString("cor_nome"));
+                    pv.setTamanhoDescricao(rs.getString("tamanho_desc"));
+                    m.setProdutoVariacao(pv);
+                }
+
+                if (rs.getObject("le_id") != null) {
+                    LocalEstoque le = new LocalEstoque();
+                    le.setId(rs.getInt("le_id"));
+                    le.setDescricao(rs.getString("local_desc"));
+                    m.setLocalEstoque(le);
+                }
+
+                if (rs.getObject("tm_id") != null) {
+                    TipoMovimentoEstoque tm = new TipoMovimentoEstoque();
+                    tm.setId(rs.getInt("tm_id"));
+                    tm.setDescricao(rs.getString("tipo_desc"));
+                    String sinalStr = rs.getString("tipo_sinal");
+                    tm.setSinal(sinalStr != null && !sinalStr.isEmpty() ? sinalStr.charAt(0) : null);
+                    m.setTipoMovimento(tm);
+                }
+
+                if (rs.getObject("func_id") != null) {
+                    Funcionario f = new Funcionario();
+                    f.setId(rs.getInt("func_id"));
+                    f.setPessoaNome(rs.getString("pessoa_nome"));
+                    m.setFuncionario(f);
+                }
+
+                return Optional.of(m);
             }
 
         } catch (SQLException e) {
@@ -119,22 +270,5 @@ public class MovimentoEstoqueDAO {
             }
             throw new RuntimeException("Erro ao deletar movimento de estoque: " + e.getMessage(), e);
         }
-    }
-
-    private MovimentoEstoque mapearMovimentoEstoque(ResultSet rs) throws SQLException {
-        MovimentoEstoque m = new MovimentoEstoque();
-        m.setId(rs.getInt("id"));
-        m.setProdutoVariacaoId((Integer) rs.getObject("produto_variacao_id"));
-        m.setLocalEstoqueId((Integer) rs.getObject("local_estoque_id"));
-        m.setTipoMovimentoId((Integer) rs.getObject("tipo_movimento_id"));
-        m.setQuantidade(rs.getDouble("quantidade"));
-
-        Timestamp timestamp = rs.getTimestamp("data_hora");
-        m.setDataHora(timestamp != null ? timestamp.toLocalDateTime() : null);
-
-        m.setFuncionarioId((Integer) rs.getObject("funcionario_id"));
-        m.setOrdemServicoId((Integer) rs.getObject("ordem_servico_id"));
-        m.setObservacao(rs.getString("observacao"));
-        return m;
     }
 }
