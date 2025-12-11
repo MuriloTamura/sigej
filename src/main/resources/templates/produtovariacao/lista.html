@@ -49,7 +49,7 @@
 
     <!-- Cabeçalho -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-boxes"></i> Lista de Variações de Produtos</h2>
+        <h2><i class="bi bi-boxes"></i> Variações de Produtos</h2>
         <a th:href="@{/produto-variacoes/novo}" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i> Nova Variação
         </a>
@@ -62,39 +62,43 @@
                 <table class="table table-hover">
                     <thead class="table-light">
                     <tr>
-                        <th>ID</th>
-                        <th>Produto ID</th>
-                        <th>Cor ID</th>
-                        <th>Tamanho ID</th>
-                        <th>Código de Barras</th>
-                        <th>Código Interno</th>
-                        <th class="text-center">Ações</th>
+                        <th style="width: 5%;">ID</th>
+                        <th style="width: 30%;">Produto</th>
+                        <th style="width: 12%;">Cor</th>
+                        <th style="width: 12%;">Tamanho</th>
+                        <th style="width: 15%;">Código de Barras</th>
+                        <th style="width: 12%;">Código Interno</th>
+                        <th class="text-center" style="width: 14%;">Ações</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="variacao : ${variacoes}">
                         <td th:text="${variacao.id}"></td>
                         <td>
-                            <span th:if="${variacao.produtoId != null}" th:text="${variacao.produtoId}"></span>
-                            <span th:unless="${variacao.produtoId != null}" class="text-muted">-</span>
+                            <i class="bi bi-box text-primary"></i>
+                            <strong th:text="${variacao.produtoDescricao != null ? variacao.produtoDescricao : 'Sem produto'}"></strong>
                         </td>
                         <td>
-                            <span th:if="${variacao.corId != null}" th:text="${variacao.corId}"></span>
-                            <span th:unless="${variacao.corId != null}" class="text-muted">-</span>
+                            <span class="badge bg-info" th:text="${variacao.corNome != null ? variacao.corNome : 'Sem cor'}"></span>
                         </td>
                         <td>
-                            <span th:if="${variacao.tamanhoId != null}" th:text="${variacao.tamanhoId}"></span>
-                            <span th:unless="${variacao.tamanhoId != null}" class="text-muted">-</span>
+                            <span class="badge bg-secondary" th:text="${variacao.tamanhoDescricao != null ? variacao.tamanhoDescricao : 'Sem tamanho'}"></span>
                         </td>
                         <td>
                             <span th:if="${variacao.codigoBarras != null and !variacao.codigoBarras.isEmpty()}"
-                                  th:text="${variacao.codigoBarras}"></span>
+                                  class="text-muted">
+                                <i class="bi bi-upc-scan"></i>
+                                <span th:text="${variacao.codigoBarras}"></span>
+                            </span>
                             <span th:unless="${variacao.codigoBarras != null and !variacao.codigoBarras.isEmpty()}"
                                   class="text-muted">-</span>
                         </td>
                         <td>
                             <span th:if="${variacao.codigoInterno != null and !variacao.codigoInterno.isEmpty()}"
-                                  th:text="${variacao.codigoInterno}"></span>
+                                  class="text-muted">
+                                <i class="bi bi-tag"></i>
+                                <span th:text="${variacao.codigoInterno}"></span>
+                            </span>
                             <span th:unless="${variacao.codigoInterno != null and !variacao.codigoInterno.isEmpty()}"
                                   class="text-muted">-</span>
                         </td>
@@ -125,8 +129,49 @@
             </div>
         </div>
     </div>
+
+    <!-- Card informativo -->
+    <div class="card mt-4 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-info-circle text-primary"></i> Sobre Variações de Produtos</h5>
+            <p class="card-text text-muted">
+                As variações de produtos permitem gerenciar diferentes versões de um mesmo produto, como cores e tamanhos diferentes.
+                Cada variação pode ter seus próprios códigos de barras e códigos internos para controle de estoque.
+            </p>
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-palette text-info me-2" style="font-size: 1.5rem;"></i>
+                        <div>
+                            <strong>Cores</strong>
+                            <p class="text-muted small mb-0">Diferentes cores</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-rulers text-warning me-2" style="font-size: 1.5rem;"></i>
+                        <div>
+                            <strong>Tamanhos</strong>
+                            <p class="text-muted small mb-0">Diferentes tamanhos</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-upc-scan text-success me-2" style="font-size: 1.5rem;"></i>
+                        <div>
+                            <strong>Códigos</strong>
+                            <p class="text-muted small mb-0">Identificação única</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/script.js"></script>
 </body>
 </html>

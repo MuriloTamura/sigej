@@ -9,6 +9,11 @@ public class ProdutoVariacao {
     private String codigoBarras;
     private String codigoInterno;
 
+    // Atributos adicionais para exibição (não persistidos)
+    private String produtoDescricao;
+    private String corNome;
+    private String tamanhoDescricao;
+
     public ProdutoVariacao() {}
 
     public ProdutoVariacao(Integer produtoId, Integer corId, Integer tamanhoId, String codigoBarras, String codigoInterno) {
@@ -28,6 +33,8 @@ public class ProdutoVariacao {
         this.codigoInterno = codigoInterno;
     }
 
+    // Getters e Setters
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -45,4 +52,15 @@ public class ProdutoVariacao {
 
     public String getCodigoInterno() { return codigoInterno; }
     public void setCodigoInterno(String codigoInterno) { this.codigoInterno = codigoInterno; }
+
+    // Getters e Setters dos atributos de exibição
+
+    public String getProdutoDescricao() { return produtoDescricao; }
+    public void setProdutoDescricao(String produtoDescricao) { this.produtoDescricao = produtoDescricao; }
+
+    public String getCorNome() { return corNome; }
+    public void setCorNome(String corNome) { this.corNome = corNome; }
+
+    public String getTamanhoDescricao() { return tamanhoDescricao; }
+    public void setTamanhoDescricao(String tamanhoDescricao) { this.tamanhoDescricao = tamanhoDescricao; }
 }

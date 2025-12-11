@@ -70,11 +70,11 @@
                         <td th:text="${local.id}"></td>
                         <td th:text="${local.descricao}"></td>
                         <td>
-                            <span th:if="${local.responsavelId != null}" class="badge bg-info">
-                                ID: <span th:text="${local.responsavelId}"></span>
+                            <span th:if="${local.responsavel != null}" class="badge bg-info">
+                                <i class="bi bi-person-fill"></i> <span th:text="${local.responsavel.pessoaNome}"></span>
                             </span>
-                            <span th:unless="${local.responsavelId != null}" class="text-muted">
-                                Sem responsável
+                            <span th:unless="${local.responsavel != null}" class="text-muted">
+                                <i class="bi bi-person-x"></i> Sem responsável
                             </span>
                         </td>
                         <td class="text-center">

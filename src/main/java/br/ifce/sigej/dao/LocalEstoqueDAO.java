@@ -2,6 +2,7 @@ package br.ifce.sigej.dao;
 
 import br.ifce.sigej.database.ConnectionFactory;
 import br.ifce.sigej.model.LocalEstoque;
+import br.ifce.sigej.model.Funcionario;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
@@ -29,14 +30,34 @@ public class LocalEstoqueDAO {
 
     public List<LocalEstoque> listar() {
         List<LocalEstoque> lista = new ArrayList<>();
-        String sql = "SELECT * FROM local_estoque ORDER BY descricao";
+        // JOIN duplo: local_estoque -> funcionario -> pessoa
+        String sql = "SELECT le.id, le.descricao, le.responsavel_id, " +
+                "f.id as funcionario_id, p.nome as pessoa_nome " +
+                "FROM local_estoque le " +
+                "LEFT JOIN funcionario f ON le.responsavel_id = f.id " +
+                "LEFT JOIN pessoa p ON f.pessoa_id = p.id " +
+                "ORDER BY le.descricao";
 
         try (Connection conn = ConnectionFactory.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                lista.add(mapearLocalEstoque(rs));
+                LocalEstoque local = new LocalEstoque();
+                local.setId(rs.getInt("id"));
+                local.setDescricao(rs.getString("descricao"));
+                local.setResponsavelId((Integer) rs.getObject("responsavel_id"));
+
+                // Se existe funcionário, criar objeto Funcionario com o nome da pessoa
+                String nomePessoa = rs.getString("pessoa_nome");
+                if (nomePessoa != null && !nomePessoa.trim().isEmpty()) {
+                    Funcionario responsavel = new Funcionario();
+                    responsavel.setId(rs.getInt("funcionario_id"));
+                    responsavel.setPessoaNome(nomePessoa);  // Usa o campo extra pessoaNome
+                    local.setResponsavel(responsavel);
+                }
+
+                lista.add(local);
             }
 
         } catch (SQLException e) {
@@ -47,7 +68,12 @@ public class LocalEstoqueDAO {
     }
 
     public Optional<LocalEstoque> buscarPorId(int id) {
-        String sql = "SELECT * FROM local_estoque WHERE id = ?";
+        String sql = "SELECT le.id, le.descricao, le.responsavel_id, " +
+                "f.id as funcionario_id, p.nome as pessoa_nome " +
+                "FROM local_estoque le " +
+                "LEFT JOIN funcionario f ON le.responsavel_id = f.id " +
+                "LEFT JOIN pessoa p ON f.pessoa_id = p.id " +
+                "WHERE le.id = ?";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -56,7 +82,20 @@ public class LocalEstoqueDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return Optional.of(mapearLocalEstoque(rs));
+                LocalEstoque local = new LocalEstoque();
+                local.setId(rs.getInt("id"));
+                local.setDescricao(rs.getString("descricao"));
+                local.setResponsavelId((Integer) rs.getObject("responsavel_id"));
+
+                String nomePessoa = rs.getString("pessoa_nome");
+                if (nomePessoa != null && !nomePessoa.trim().isEmpty()) {
+                    Funcionario responsavel = new Funcionario();
+                    responsavel.setId(rs.getInt("funcionario_id"));
+                    responsavel.setPessoaNome(nomePessoa);
+                    local.setResponsavel(responsavel);
+                }
+
+                return Optional.of(local);
             }
 
         } catch (SQLException e) {
@@ -97,13 +136,5 @@ public class LocalEstoqueDAO {
             }
             throw new RuntimeException("Erro ao deletar local de estoque: " + e.getMessage(), e);
         }
-    }
-
-    private LocalEstoque mapearLocalEstoque(ResultSet rs) throws SQLException {
-        LocalEstoque l = new LocalEstoque();
-        l.setId(rs.getInt("id"));
-        l.setDescricao(rs.getString("descricao"));
-        l.setResponsavelId((Integer) rs.getObject("responsavel_id"));
-        return l;
     }
 }

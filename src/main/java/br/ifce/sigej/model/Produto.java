@@ -8,6 +8,11 @@ public class Produto {
     private Integer unidadeMedidaId;
     private Integer marcaId;
 
+    // Atributos adicionais para exibição (não persistidos)
+    private String categoriaNome;
+    private String unidadeSigla;
+    private String marcaNome;
+
     public Produto() {}
 
     public Produto(String descricao, Integer categoriaId, Integer unidadeMedidaId, Integer marcaId) {
@@ -25,6 +30,8 @@ public class Produto {
         this.marcaId = marcaId;
     }
 
+    // Getters e Setters
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -39,4 +46,15 @@ public class Produto {
 
     public Integer getMarcaId() { return marcaId; }
     public void setMarcaId(Integer marcaId) { this.marcaId = marcaId; }
+
+    // Getters e Setters dos atributos de exibição
+
+    public String getCategoriaNome() { return categoriaNome; }
+    public void setCategoriaNome(String categoriaNome) { this.categoriaNome = categoriaNome; }
+
+    public String getUnidadeSigla() { return unidadeSigla; }
+    public void setUnidadeSigla(String unidadeSigla) { this.unidadeSigla = unidadeSigla; }
+
+    public String getMarcaNome() { return marcaNome; }
+    public void setMarcaNome(String marcaNome) { this.marcaNome = marcaNome; }
 }

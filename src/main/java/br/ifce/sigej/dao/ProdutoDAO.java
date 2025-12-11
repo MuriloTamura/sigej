@@ -32,7 +32,22 @@ public class ProdutoDAO {
 
     public List<Produto> listar() {
         List<Produto> lista = new ArrayList<>();
-        String sql = "SELECT * FROM produto ORDER BY descricao";
+        String sql = """
+            SELECT 
+                p.id,
+                p.descricao,
+                p.categoria_id,
+                p.unidade_medida_id,
+                p.marca_id,
+                c.nome as categoria_nome,
+                u.sigla as unidade_sigla,
+                m.nome as marca_nome
+            FROM produto p
+            LEFT JOIN categoria_material c ON p.categoria_id = c.id
+            LEFT JOIN unidade_medida u ON p.unidade_medida_id = u.id
+            LEFT JOIN marca m ON p.marca_id = m.id
+            ORDER BY p.descricao
+            """;
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -45,6 +60,12 @@ public class ProdutoDAO {
                 p.setCategoriaId((Integer) rs.getObject("categoria_id"));
                 p.setUnidadeMedidaId((Integer) rs.getObject("unidade_medida_id"));
                 p.setMarcaId((Integer) rs.getObject("marca_id"));
+
+                // Atributos adicionais para exibição
+                p.setCategoriaNome(rs.getString("categoria_nome"));
+                p.setUnidadeSigla(rs.getString("unidade_sigla"));
+                p.setMarcaNome(rs.getString("marca_nome"));
+
                 lista.add(p);
             }
 

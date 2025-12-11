@@ -5,6 +5,7 @@ public class LocalEstoque {
     private int id;
     private String descricao;
     private Integer responsavelId;
+    private Funcionario responsavel;  // Mudado de Pessoa para Funcionario
 
     public LocalEstoque() {}
 
@@ -27,4 +28,7 @@ public class LocalEstoque {
 
     public Integer getResponsavelId() { return responsavelId; }
     public void setResponsavelId(Integer responsavelId) { this.responsavelId = responsavelId; }
+
+    public Funcionario getResponsavel() { return responsavel; }
+    public void setResponsavel(Funcionario responsavel) { this.responsavel = responsavel; }
 }

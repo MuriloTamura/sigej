@@ -33,14 +33,43 @@ public class ProdutoVariacaoDAO {
 
     public List<ProdutoVariacao> listar() {
         List<ProdutoVariacao> lista = new ArrayList<>();
-        String sql = "SELECT * FROM produto_variacao ORDER BY id";
+        String sql = """
+            SELECT 
+                pv.id,
+                pv.produto_id,
+                pv.cor_id,
+                pv.tamanho_id,
+                pv.codigo_barras,
+                pv.codigo_interno,
+                p.descricao as produto_descricao,
+                c.nome as cor_nome,
+                t.descricao as tamanho_descricao
+            FROM produto_variacao pv
+            LEFT JOIN produto p ON pv.produto_id = p.id
+            LEFT JOIN cor c ON pv.cor_id = c.id
+            LEFT JOIN tamanho t ON pv.tamanho_id = t.id
+            ORDER BY pv.id
+            """;
 
         try (Connection conn = ConnectionFactory.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                lista.add(mapearProdutoVariacao(rs));
+                ProdutoVariacao v = new ProdutoVariacao();
+                v.setId(rs.getInt("id"));
+                v.setProdutoId((Integer) rs.getObject("produto_id"));
+                v.setCorId((Integer) rs.getObject("cor_id"));
+                v.setTamanhoId((Integer) rs.getObject("tamanho_id"));
+                v.setCodigoBarras(rs.getString("codigo_barras"));
+                v.setCodigoInterno(rs.getString("codigo_interno"));
+
+                // Atributos adicionais para exibição
+                v.setProdutoDescricao(rs.getString("produto_descricao"));
+                v.setCorNome(rs.getString("cor_nome"));
+                v.setTamanhoDescricao(rs.getString("tamanho_descricao"));
+
+                lista.add(v);
             }
 
         } catch (SQLException e) {
