@@ -63,8 +63,8 @@
                     <thead class="table-light">
                     <tr>
                         <th>ID</th>
-                        <th>Equipe ID</th>
-                        <th>Funcionário ID</th>
+                        <th>Equipe</th>
+                        <th>Funcionário</th>
                         <th>Data Início</th>
                         <th>Data Fim</th>
                         <th>Função</th>
@@ -74,8 +74,14 @@
                     <tbody>
                     <tr th:each="membro : ${membros}">
                         <td th:text="${membro.id}"></td>
-                        <td th:text="${membro.equipeId}"></td>
-                        <td th:text="${membro.funcionarioId}"></td>
+                        <td>
+                            <span th:text="${membro.equipeNome}"></span>
+                            <small class="text-muted" th:text="' (ID: ' + ${membro.equipeId} + ')'"></small>
+                        </td>
+                        <td>
+                            <span th:text="${membro.funcionarioNome}"></span>
+                            <small class="text-muted" th:text="' (ID: ' + ${membro.funcionarioId} + ')'"></small>
+                        </td>
                         <td th:text="${#temporals.format(membro.dataInicio, 'dd/MM/yyyy')}"></td>
                         <td>
                             <span th:if="${membro.dataFim != null}" th:text="${#temporals.format(membro.dataFim, 'dd/MM/yyyy')}"></span>

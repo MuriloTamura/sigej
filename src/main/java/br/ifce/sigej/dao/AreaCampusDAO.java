@@ -31,14 +31,20 @@ public class AreaCampusDAO {
 
     public List<AreaCampus> listar() {
         List<AreaCampus> lista = new ArrayList<>();
-        String sql = "SELECT * FROM area_campus ORDER BY id";
+        String sql = """
+            SELECT ac.*, 
+                   ta.descricao AS tipo_area_descricao
+            FROM area_campus ac
+            LEFT JOIN tipo_area_campus ta ON ac.tipo_area_id = ta.id
+            ORDER BY ac.id
+        """;
 
         try (Connection conn = ConnectionFactory.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                lista.add(mapearAreaCampus(rs));
+                lista.add(mapearAreaCampusComTipo(rs));
             }
 
         } catch (SQLException e) {
@@ -49,7 +55,13 @@ public class AreaCampusDAO {
     }
 
     public Optional<AreaCampus> buscarPorId(int id) {
-        String sql = "SELECT * FROM area_campus WHERE id = ?";
+        String sql = """
+            SELECT ac.*, 
+                   ta.descricao AS tipo_area_descricao
+            FROM area_campus ac
+            LEFT JOIN tipo_area_campus ta ON ac.tipo_area_id = ta.id
+            WHERE ac.id = ?
+        """;
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -58,7 +70,7 @@ public class AreaCampusDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return Optional.of(mapearAreaCampus(rs));
+                return Optional.of(mapearAreaCampusComTipo(rs));
             }
 
         } catch (SQLException e) {
@@ -107,7 +119,7 @@ public class AreaCampusDAO {
         }
     }
 
-    private AreaCampus mapearAreaCampus(ResultSet rs) throws SQLException {
+    private AreaCampus mapearAreaCampusComTipo(ResultSet rs) throws SQLException {
         AreaCampus a = new AreaCampus();
         a.setId(rs.getInt("id"));
 
@@ -119,6 +131,10 @@ public class AreaCampusDAO {
 
         a.setDescricao(rs.getString("descricao"));
         a.setBloco(rs.getString("bloco"));
+
+        // Campo extra para exibição
+        a.setTipoAreaDescricao(rs.getString("tipo_area_descricao"));
+
         return a;
     }
 }

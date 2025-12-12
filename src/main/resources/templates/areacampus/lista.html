@@ -69,7 +69,10 @@
                     <tbody>
                     <tr th:each="area : ${areasCampus}">
                         <td th:text="${area.id}"></td>
-                        <td th:text="${area.tipoAreaId}"></td>
+                        <td>
+                            <span th:text="${area.tipoAreaDescricao}"></span>
+                            <small class="text-muted" th:text="' (ID: ' + ${area.tipoAreaId} + ')'"></small>
+                        </td>
                         <td th:text="${area.descricao}"></td>
                         <td>
                             <span th:if="${area.bloco != null and !area.bloco.isEmpty()}"

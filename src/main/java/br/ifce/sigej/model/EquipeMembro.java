@@ -5,11 +5,15 @@ import java.time.LocalDate;
 public class EquipeMembro {
 
     private int id;
-    private Integer equipeId;      // Integer ao invés de int
-    private Integer funcionarioId;  // Integer ao invés de int
+    private Integer equipeId;
+    private Integer funcionarioId;
     private LocalDate dataInicio;
     private LocalDate dataFim;
     private String funcao;
+
+    // Campos extras para exibição (não existem no banco)
+    private String equipeNome;
+    private String funcionarioNome;
 
     public EquipeMembro() {}
 
@@ -47,4 +51,11 @@ public class EquipeMembro {
 
     public String getFuncao() { return funcao; }
     public void setFuncao(String funcao) { this.funcao = funcao; }
+
+    // Getters e Setters dos campos extras
+    public String getEquipeNome() { return equipeNome; }
+    public void setEquipeNome(String equipeNome) { this.equipeNome = equipeNome; }
+
+    public String getFuncionarioNome() { return funcionarioNome; }
+    public void setFuncionarioNome(String funcionarioNome) { this.funcionarioNome = funcionarioNome; }
 }
