@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios - SIGEJ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="bi bi-gear-fill"></i> SIGEJ
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}"><i class="bi bi-house"></i> Início</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/relatorios}"><i class="bi bi-file-earmark-bar-graph"></i> Relatórios</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Container -->
+<div class="container mt-4">
+    <!-- Alertas -->
+    <div th:if="${erro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i> <span th:text="${erro}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Cabeçalho -->
+    <div class="mb-4">
+        <h2><i class="bi bi-file-earmark-bar-graph"></i> Relatórios e Consultas</h2>
+        <p class="lead">Consultas gerenciais do sistema de manutenção</p>
+        <hr>
+    </div>
+
+    <!-- Cards de Relatórios -->
+    <div class="row g-4">
+        <!-- Relatório 1 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-clipboard-check text-danger"></i> OS em Aberto
+                    </h5>
+                    <p class="card-text">
+                        Visualize todas as ordens de serviço em aberto ordenadas por prioridade e data de abertura.
+                    </p>
+                    <a th:href="@{/relatorios/os-abertas}" class="btn btn-danger">
+                        <i class="bi bi-search"></i> Consultar
+                    </a>
+                </div>
+                <div class="card-footer text-muted">
+                    <small><i class="bi bi-info-circle"></i> Status: Aberta, Em Atendimento, Aguardando Material</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Relatório 2 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-exclamation-triangle text-warning"></i> Estoque Baixo
+                    </h5>
+                    <p class="card-text">
+                        Materiais abaixo do ponto de reposição que precisam ser reabastecidos.
+                    </p>
+                    <a th:href="@{/relatorios/materiais-baixo-estoque}" class="btn btn-warning">
+                        <i class="bi bi-search"></i> Consultar
+                    </a>
+                </div>
+                <div class="card-footer text-muted">
+                    <small><i class="bi bi-info-circle"></i> Quantidade < Ponto de Reposição</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Relatório 3 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-clock-history text-info"></i> Timeline de OS
+                    </h5>
+                    <p class="card-text">
+                        Histórico completo de andamentos de uma ordem de serviço específica.
+                    </p>
+                    <a th:href="@{/relatorios/timeline-os}" class="btn btn-info">
+                        <i class="bi bi-search"></i> Consultar
+                    </a>
+                </div>
+                <div class="card-footer text-muted">
+                    <small><i class="bi bi-info-circle"></i> Informe o ID da OS</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Relatório 4 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-people-fill text-success"></i> Consumo por Equipe
+                    </h5>
+                    <p class="card-text">
+                        Materiais consumidos por cada equipe de manutenção em um período.
+                    </p>
+                    <a th:href="@{/relatorios/consumo-equipe}" class="btn btn-success">
+                        <i class="bi bi-search"></i> Consultar
+                    </a>
+                </div>
+                <div class="card-footer text-muted">
+                    <small><i class="bi bi-info-circle"></i> Informe período (data início/fim)</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Relatório 5 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-check-circle text-primary"></i> OS Concluídas
+                    </h5>
+                    <p class="card-text">
+                        Ordens de serviço concluídas agrupadas por tipo em um ano específico.
+                    </p>
+                    <a th:href="@{/relatorios/os-concluidas-ano}" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Consultar
+                    </a>
+                </div>
+                <div class="card-footer text-muted">
+                    <small><i class="bi bi-info-circle"></i> Padrão: ano atual</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card informativo -->
+    <div class="card mt-4 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-info-circle text-primary"></i> Sobre os Relatórios</h5>
+            <p class="card-text text-muted">
+                Estes relatórios foram desenvolvidos para fornecer visões estratégicas sobre a gestão de manutenção e estoque.
+                Utilize os filtros disponíveis em cada relatório para obter informações específicas.
+            </p>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/script.js"></script>
+</body>
+</html>
