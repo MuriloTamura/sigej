@@ -39,14 +39,23 @@ public class EquipeMembroDAO {
 
     public List<EquipeMembro> listar() {
         List<EquipeMembro> lista = new ArrayList<>();
-        String sql = "SELECT * FROM equipe_membro ORDER BY id";
+        String sql = """
+            SELECT em.*, 
+                   e.nome AS equipe_nome,
+                   p.nome AS funcionario_nome
+            FROM equipe_membro em
+            LEFT JOIN equipe_manutencao e ON em.equipe_id = e.id
+            LEFT JOIN funcionario f ON em.funcionario_id = f.id
+            LEFT JOIN pessoa p ON f.pessoa_id = p.id
+            ORDER BY em.id
+        """;
 
         try (Connection conn = ConnectionFactory.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                lista.add(mapearEquipeMembro(rs));
+                lista.add(mapearEquipeMembroComNomes(rs));
             }
 
         } catch (SQLException e) {
@@ -57,7 +66,16 @@ public class EquipeMembroDAO {
     }
 
     public Optional<EquipeMembro> buscarPorId(int id) {
-        String sql = "SELECT * FROM equipe_membro WHERE id = ?";
+        String sql = """
+            SELECT em.*, 
+                   e.nome AS equipe_nome,
+                   p.nome AS funcionario_nome
+            FROM equipe_membro em
+            LEFT JOIN equipe_manutencao e ON em.equipe_id = e.id
+            LEFT JOIN funcionario f ON em.funcionario_id = f.id
+            LEFT JOIN pessoa p ON f.pessoa_id = p.id
+            WHERE em.id = ?
+        """;
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -66,7 +84,7 @@ public class EquipeMembroDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return Optional.of(mapearEquipeMembro(rs));
+                return Optional.of(mapearEquipeMembroComNomes(rs));
             }
 
         } catch (SQLException e) {
@@ -122,7 +140,7 @@ public class EquipeMembroDAO {
         }
     }
 
-    private EquipeMembro mapearEquipeMembro(ResultSet rs) throws SQLException {
+    private EquipeMembro mapearEquipeMembroComNomes(ResultSet rs) throws SQLException {
         EquipeMembro m = new EquipeMembro();
         m.setId(rs.getInt("id"));
         m.setEquipeId(rs.getInt("equipe_id"));
@@ -133,6 +151,11 @@ public class EquipeMembroDAO {
         m.setDataFim(dataFim != null ? dataFim.toLocalDate() : null);
 
         m.setFuncao(rs.getString("funcao"));
+
+        // Campos extras para exibição
+        m.setEquipeNome(rs.getString("equipe_nome"));
+        m.setFuncionarioNome(rs.getString("funcionario_nome"));
+
         return m;
     }
 }

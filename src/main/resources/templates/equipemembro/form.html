@@ -77,7 +77,7 @@
                             <option value="">Selecione um funcionário</option>
                             <option th:each="funcionario : ${funcionarios}"
                                     th:value="${funcionario.id}"
-                                    th:text="${funcionario.pessoaId}">
+                                    th:text="${funcionario.pessoaNome != null ? funcionario.pessoaNome : 'Funcionário ID: ' + funcionario.id}">
                             </option>
                         </select>
                     </div>
